@@ -1,5 +1,15 @@
 # Write-Up（Web部分）
 
+## view_source
+
++ 打开网页，只看到一个大大的 “FLAG is not here” 的提示。
++ 题目的提示是 **查看源代码** ，因此直接在火狐浏览器中按下 **F12** ，即可看到源代码中有一行注释。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF（攻防世界）/WEB/view_source/1.png)
+
++ 注释中的内容就是flag。
++ flag: **cyberpeace{2d6b553891b29fd9ed11a89127bade69}**
+
 ## NewsCenter
 
 + 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
