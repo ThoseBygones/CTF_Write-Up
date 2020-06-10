@@ -10,6 +10,26 @@
 + 注释中的内容就是flag。
 + flag: **cyberpeace{2d6b553891b29fd9ed11a89127bade69}**
 
+
+
+## robots
+
++ 看到题目，直接想到可能与 **robots.txt** 有关。
++ 不了解 [**robots协议**](https://baike.baidu.com/item/robots%E5%8D%8F%E8%AE%AE/2483797?fr=aladdin) 的百度一下。
++ 在题目 **URL** 的后面加上 `/robots.txt` ，查看网站的 **robots.txt**：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/robots/1.png)
+
++ 发现 **robots.txt** 中禁止了 **f1ag_1s_h3re.php** 的显示：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/robots/1.png)
+
++ 直接在原 **URL** 后面加上 `/f1ag_1s_h3re.php` 。
++ f1ag_1s_h3re.php 页面中的内容就是 flag 。
++ flag: **cyberpeace{c1d5ab0f1dc36f04d10beed108ca8345}**
+
+
+
 ## NewsCenter
 
 + 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
