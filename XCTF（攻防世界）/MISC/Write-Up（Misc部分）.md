@@ -1,5 +1,33 @@
 # Write-Up（Misc部分）
 
+## flag{th1s_!s_a_d4m0_4la9}
+
++ 题目中直接给的 flag ，复制粘贴即可...
++ flag: **flag{th1s_!s_a_d4m0_4la9}**
+
+
+
+## wireshark-1
+
++ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
++ 果断上 **wireshark** ，查看数据包内容。
++ 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/1.png)
+
++ 发现第二个 **HTML包** 的内容是一个 **php网站** 的登录操作，故右键选择 **追踪流** -> **TCP流**
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/2.png)
+
++ 仔细查看流的内容即可发现其中隐藏着 flag ——登录的 **email** 字段值为 **flag** ，**password** 字段值即为我们要的 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/3.png)
+
++ 也可以在弹出来的框底部的 **查找** 中直接查找字段 **flag** 。
++ flag: **flag{ffb7567a1d4f4abdffdb54e022f8facd}**
+
+
+
 ## a_good_idea
 
 + 下载压缩包解压以后看到一张很普通的表情包：
