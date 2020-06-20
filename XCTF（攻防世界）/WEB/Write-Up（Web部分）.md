@@ -274,6 +274,142 @@ if($b>1234){
 
 
 
+## command_execution
+
++ 打开网页，发现网页中有个输入框，让你输入一个 IP 地址，然后有个 ping 按钮：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/command_execution/1.png?raw=true)
+
++ 随便输入一个 IP 地址试试，发现这个网页实际上很类似一个 cmd 的窗口：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/command_execution/2.png?raw=true)
+
++ 注意题目的提示：“小宁写了个ping功能,但没有写waf” ，百度一下就知道什么是 waf ：
+
+  > Web 应用防护系统（Web Application Firewall，简称 WAF，也称网站应用级入侵防御系统）。利用国际上公认的一种说法：Web应用防火墙是通过执行一系列针对 HTTP/HTTPS 的安全策略来专门为 Web 应用提供保护的一款产品。
+
++ 考虑到该网页后台服务器应该是 Linux/Unix 系统，故尝试使用 Linux 命令中的管道来执行一些别的命令。首先尝试显示当前网页所在的目录下的所有文件，对应 Linux 中的命令 `ls` ，在输入框中输入内容如下：`127.0.0.1 | ls` ，发现能成功执行：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/command_execution/3.png?raw=true)
+
++ 此时可以利用 Linux 命令查看上级目录的内容： `127.0.0.1 | ../` ，但对 Linux 系统熟悉的话，可以直接查看系统主目录（ **/home** ）下的内容（从根目录下开始查看）： `127.0.0.1 | ls /home` ：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/command_execution/4.png?raw=true)
+
++ 很巧的发现了主目录下有个 **flag.txt** 文件。于是再用 Linux 命令打开这个文件：`127.0.0.1 | cat /home/flag.txt`，顺利得到 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/command_execution/5.png?raw=true)
+
++ flag: **cyberpeace{d5646eacf9bd2cde07262689a97034be}**
+
+
+
+## simple_js
+
++ 打开网站，弹出一个对话框，对话框里有一个输入框，要求往输入框里输入密码：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/simple_js/1.png?raw=true)
+
++ 随便输入个密码进去，弹出一个新的对话框，内容为 “FAUX PASSWORD HAHA”，大意是密码错误...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/simple_js/2.png?raw=true)
+
++ 点击确定后即可按 **F12** 查看该页面的 JavaScript 代码，代码很长还很乱，整理后如下：
+
+```JavaScript
+function dechiffre(pass_enc){
+    var pass = "70,65,85,88,32,80,65,83,83,87,79,82,68,32,72,65,72,65";
+    var tab  = pass_enc.split(',');
+    var tab2 = pass.split(',');
+	var i,j,k,l=0,m,n,o,p = "";
+	i = 0;
+	j = tab.length;
+    k = j + (l) + (n=0);
+    n = tab2.length;
+    for(i = (o=0); i < (k = j = n); i++ ){
+		o = tab[i-l];
+		p += String.fromCharCode((o = tab2[i]));
+        if(i == 5)
+			break;
+	}
+    for(i = (o=0); i < (k = j = n); i++ ){
+        o = tab[i-l];
+        if(i > 5 && i < k-1)
+            p += String.fromCharCode((o = tab2[i]));
+    }
+    p += String.fromCharCode(tab2[17]);
+    pass = p;
+	eturn pass;
+}
+String["fromCharCode"](dechiffre("\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30"));
+
+h = window.prompt('Enter password');
+alert( dechiffre(h) );
+```
+
++ 看了半天发现，输入到输入框中的内容经过处理存在变量 `tab` 中，然而无论输入什么，都会被变量 `tab2` 给覆盖掉，而 `tab2` 的内容是代码中写死的。利用 Python 输出 `tab2` 后发现 `tab2` 的值即为之前随便输入某个密码时弹出的提示 “FAUX PASSWORD HAHA” 。处理文件为 **get_output.py** ：
+
+```Python
+msg = [70,65,85,88,32,80,65,83,83,87,79,82,68,32,72,65,72,65]
+
+output = ""
+
+for i in msg:
+    output += chr(i)
+    
+print(output)
+```
+
++  所以无论输入密码是什么，都会提示你输入的密码有误...
++ 好吧，于是继续看代码，发现代码中有一行内容十分可疑：
+
+```javascript
+String["fromCharCode"](dechiffre("\x35\x35\x2c\x35\x36\x2c\x35\x34\x2c\x37\x39\x2c\x31\x31\x35\x2c\x36\x39\x2c\x31\x31\x34\x2c\x31\x31\x36\x2c\x31\x30\x37\x2c\x34\x39\x2c\x35\x30"));
+```
+
++ 于是用 Python 处理一下，得到一串字符串，按照格式提交上去发现就是 flag ...
++ 处理文件为 **get_flag.py** :
+
+```python
+msg = ['0x35', '0x35', '0x2c', '0x35', '0x36', '0x2c', '0x35', '0x34', '0x2c', 
+       '0x37', '0x39', '0x2c', '0x31', '0x31', '0x35', '0x2c', '0x36', '0x39', 
+       '0x2c', '0x31', '0x31', '0x34', '0x2c', '0x31', '0x31', '0x36', '0x2c',
+       '0x31', '0x30', '0x37', '0x2c', '0x34', '0x39', '0x2c', '0x35', '0x30']
+
+tmp = ""
+
+for i in msg:
+    tmp += chr(int(i, 16))
+
+tmp = tmp.split(',')
+#print(tmp)
+
+flag = ""
+
+for i in tmp:
+    flag += chr(int(i, 10))
+
+print("Cyberpeace{" + flag + "}")
+```
+
++ 这题好折腾人啊QAQ...
++ flag: **Cyberpeace{786OsErtk12}**
+
+
+
+## baby_web
+
++ 打开网页，看到只有左上角一行 “HELLO WORLD” ...
++ 题目的提示是 “想想初始页面是哪个” ，于是查看了一下网页的 **URL** ，发现是 **1.php** ，显然不是初始页面（初始页面应该是 **index.php**）。
++ 于是按下 **F12** ，然后把 URL 的 `/1.php` 改为 `/index.php` ，改完以后发现页面飞快的又跳转回了 **1.php** ，似乎什么都没有发生。但是导航栏的网络那一栏出现了一行 index.php 。
++ 查看其响应头发现其中有一项 **FLAG** ，对应内容即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/baby_web/1.png?raw=true)
+
++ flag: **flag{very_baby_web}**
+
+
+
 ## NewsCenter
 
 + 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
