@@ -410,6 +410,99 @@ print("Cyberpeace{" + flag + "}")
 
 
 
+## Training-WWW-Robots
+
++ 打开网页，一看又是关于 robots 协议的题目。
++ 老套路，在 URL 栏最后面补上 `/robots.txt` ，看到 **robots.txt** 的内容：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/Training-WWW-Robots/1.png?raw=true)
+
++ 看到对于一般的 User-agent ，**/fl0g.php** 页面被禁止访问。猜测 flag 很可能就在这个页面里，于是直接在 URL 栏最后面把 `/robots.txt` 修改为 `/fl0g.php` ，就得到了 flag 。
++ flag: **cyberpeace{8c99fae35728becfbe1c0032207a99b4}**
+
+
+
+## ics-06
+
++ 打开网页，看到一个貌似很酷的平台：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/ics-06/1.png?raw=true)
+
++ 然后开始瞎点，发现网页里的大部分东西点击了都没有任何效果，只有一个按钮选项 “报表中心” 点击以后跳转到另外一个页面：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/ics-06/2.png?raw=true)
+
++ 页面中有个 “日期范围” 可以选择，但是折腾半天并没有发现什么 bug，而且尝试选择日期范围后点击 “确认” 以后网页也没有任何反应（或者跳转）。
++ 正在懵逼中发现 URL 栏有用 **GET方法** 传参数 **id**，尝试改变参数 id 的值发现没什么变化（感觉可能需要找到会变化的参数值），于是打开 burpsuite 爆破。
++ 抓包，然后点击 **Send to Intruder** ，**Payloads** 处设置爆破 id 参数的类型为 **Numbers** ，范围先设置为 1 - 100 。
++ 发现 Result 中的 Length 字段值一直是 1866 没有变化，于是继续尝试更大的 id 。
++ 一直试到 **id = 2333** 时（其实我只试到了 1000 就心态崩了，Burpsuite Community 版的貌似不支持多线程爆破，导致爆破速度极慢orz），发现 Length 字段值为 1901 与之前的都不同，查看 **Response** 发现多了一行字，即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/ics-06/3.png?raw=true)
+
++ flag: **cyberpeace{3efd547a84695f0489cc235d4579f7c8}**
+
+
+
+## NaNNaNNaNNaN-Batman
+
++ 附件里是个没有后缀的文件，打开看发现很像 **JavaScript** 的代码，但是好多乱码字符...
++ 后缀改成 **.html** ，然后在浏览器中打开看看，发现竟然能运行orz，出来一个输入框，后面还有一个 “ok” 按钮（ **web100.html** 文件）：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NaNNaNNaNNaN-Batman/1.png?raw=true)
+
++ 直接点击没反应，随便输入点什么也没反应...
++ 于是滚去读源代码，发现代码的最后有一段 `eval(_)` ，而函数名就为 `_` 。JavaScript 中的 `eval()` 函数可计算某个字符串，并执行其中的的 JavaScript 代码。故改成 `alert(_)` 让其在弹窗中显示正常的 JavaScript 内容，结果如下（ **text1.html** 文件）：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NaNNaNNaNNaN-Batman/2.png?raw=true)
+
++ 将弹窗中的内容复制到新文件中（ **JavaScript.js** ），整理后得到如下代码：
+
+```javascript
+function $(){
+	var e=document.getElementById("c").value;
+	if(e.length==16)
+		if(e.match(/^be0f23/)!=null)
+			if(e.match(/233ac/)!=null)
+				if(e.match(/e98aa$/)!=null)
+					if(e.match(/c7be9/)!=null){
+						var t=["fl","s_a","i","e}"];
+						var n=["a","_h0l","n"];
+						var r=["g{","e","_0"];
+						var i=["it'","_","n"];
+						var s=[t,n,r,i];
+						for(var o=0;o<13;++o){
+							document.write(s[o%4][0]);
+							s[o%4].splice(0,1)
+						}
+					}
+}
+document.write('<input id="c"><button onclick=$()>Ok</button>');
+delete _
+```
+
++ 仔细阅读后发现，flag 就在 `var s=[t,n,r,i]` 中，然后通过下一行的一层 `for` 循环打印出来。对代码熟悉的话研究一下就能直接写出 flag （需要知道 `splice()` 函数的作用）。
+
+  > `splice()` 方法向/从数组中添加/删除项目，然后返回被删除的项目。
+  >
+  > <code>arrayObject.splice(index,howmany,item1,.....,itemX)</code>
+  >
+  > 参数：
+  >
+  > + `index` ：必需。整数，规定添加/删除项目的位置，使用负数可从数组结尾处规定位置。
+  > + `howmany` ：必需。要删除的项目数量。如果设置为 0，则不会删除项目。
+  > + `item1, ..., itemX` ：可选。向数组添加的新项目。
+  >
+  > 返回值：
+  >
+  > + `Array` ：包含被删除项目的新数组，如果有的话。
+
++ 否则对正则表达式了解的话也可以利用前面的几个 `if` 判断条件来得到应该在输入框中输入的字符串为 **be0f233ac7be98aa** （字符串**长度为 16** ，字符串**前缀必须为 be0f23** ，**后缀必须为 e98aa** ，**必须包含子串 233ac 和 c7be9** ），在输入框中输入该字符串即可得到 flag 。
+
++ flag: **flag{it's_a_h0le_in_0ne}**
+
+
+
 ## NewsCenter
 
 + 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
