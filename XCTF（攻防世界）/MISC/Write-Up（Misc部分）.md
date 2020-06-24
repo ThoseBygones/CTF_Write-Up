@@ -1,9 +1,41 @@
 # Write-Up（Misc部分）
 
-## flag{th1s_!s_a_d4m0_4la9}
+## this is flag
 
 + 题目中直接给的 flag ，复制粘贴即可...
 + flag: **flag{th1s_!s_a_d4m0_4la9}**
+
+
+
+## Test-flag-please-ignore
+
++ 下载附件压缩包并解压，发现一个无后缀的文件 **misc10** 。
+
++ 右键用 **Notepad++** 打开，发现文件里就一串字符串：
+
+  > 666c61677b68656c6c6f5f776f726c647d
+
++ 看着像是十六进制数，猜测可能俩俩凑个对可以构成一个 ASCII 码对应的字符。
+
++ 于是写个简简单单的 Python 脚本 **trans.py** ：
+
+```python
+code = "666c61677b68656c6c6f5f776f726c647d"
+
+flag = ""
+
+for i in range(0, len(code)):
+    if i % 2 == 0:
+        tmpstr = code[i]
+    else:
+        tmpstr += code[i]
+        flag += chr(int(tmpstr, 16))
+        
+print(flag)
+```
+
++ 输出的内容即为 flag 。
++ flag: **flag{hello_world}**
 
 
 
