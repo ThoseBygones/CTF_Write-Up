@@ -546,6 +546,73 @@ delete _
 
 
 
+## PHP2
+
++ 打开网页，看到一行字 “Can you anthenticate to this website?”。
+
++ 感觉大概是要以一个什么类似管理员或者有权限的用户的身份来访问这个网页才能得到 flag 。
+
++ 还是 **F12** ，然后查看网络选项卡里的消息头，并没有在响应头里面发现什么有价值的信息，cookie 选项则显示 “此请求无 cookie ” 。
+
++ 想到题目的名字是 **PHP2** ，于是尝试在 URL 后面加上 `/index.php` ，发现是个一模一样的网页，而且 F12 里面也没有什么新鲜的东西。
+
++ 既然是 PHP 页面，而页面显示给我的内容只有 HTML 的内容，因此就想查看 index.php 的源代码，尝试之前的套路试图查看备份文件 **index.php~** 或者 **index.php.bak** ，很不幸的是一无所获...
+
++ 各种查资料百度以后才知道应该通过 **index.phps** 查看（如果这个文件在服务器上能访问的话...）页面的 PHP 源代码。
+
+  > + phps 文件就是 php 的源代码文件，通常用于提供给用户（访问者）直接通过 Web 浏览器查看 php 代码的内容。
+  >
+  > + 因为用户无法直接通过 Web 浏览器 “看到” php 文件的内容，所以需要用 phps 文件代替。
+  >
+  > + 其实，只要不用 php 等已经在服务器中注册过的MIME类型的文件扩展名即可，但为了国际通用，所以才用了 phps 文件类型。
+  >
+  > + phps 文件的 MIME 类型为：text/html, application/x-httpd-php-source, application/x-httpd-php3-source 。
+
++ 涨姿势了，于是在 URL 地址后面补上 `/index.phps` ，看到页面上显示出一行 “not allowed!” 以及一段有点像 php 但是很奇怪的代码...
+
+```php
+"); exit(); } $_GET[id] = urldecode($_GET[id]); if($_GET[id] == "admin") { echo "
+
+Access granted!
+"; echo "
+
+Key: xxxxxxx
+"; } ?> Can you anthenticate to this website? 
+```
+
++ 起码能读懂代码，看到里面有个判断语句，当通过 URL 地址传参数 `id=admin` 时，页面会显示 **Access granted!** ，并且显示 **Key** 。
+
++ 于是满心欢喜的在 URL 地址后面补写上 `id=admin` ，结果得到了还是 “not allowed!” 的提示。
+
++ 再次阅读代码，发现 if 判断语句之前用了一个 `urldecode()` 函数，定义和用法如下：
+
+  > **定义和用法**
+  >
+  > + `urldecode()` 解码 URL 字符串函数。
+  >
+  > + 此函数用于解码给出的已编码字符串中的任何 %## 以及中文等被编码的内容。 （加号（'+'）被解码成一个空格字符）。
+  >
+  > + 该函数经常被使用于 php 解码 URL 中的中文字符串。
+  >
+  > **语法**
+  >
+  > `string urldecode ( string $str )`
+
++ 猜测可能 admin 字符串被过滤了，因此将其替换成 ASCII 码后，得到的 payload 为 `id=%61%64%6D%69%6E` 。
+
++ 修改 URL 后很不幸再次得到一个 “not allowed!” 的提示... 仔细查看代码以及函数 `urldecode()` 的用法，发现一个重要的情况：
+
+  > Note:
+  > 注意：超全局变量 `$_GET` 和 `$_REQUEST` **已经被解码了**。对 `$_GET` 或 `$_REQUEST` 里的元素使用 `urldecode()` 将会导致不可预计和危险的结果。
+
++ 破案了，原来是因为用 `$_GET[id]` 的时候已经把我的 ASCII 码转换为字符了，因此需要再对 ASCII 码进行一次转换，即将 'admin' 转换为 ASCII 码后还要再对得到的 ASCII 码再次转换... （说好的**禁止套娃**呢...）
+
++ 最后得到一串编码，在 URL 地址最后补上 `/id=%25%36%31%25%36%34%25%36%44%25%36%39%25%36%45` ，即可在跳转后的页面中得到 flag 。
+
++ flag: **cyberpeace{b9fcfa7f54ab9b3d5f89944c04078154}**
+
+
+
 ## unserialize3
 
 + 打开页面，发现一段不完整的 php 代码：
