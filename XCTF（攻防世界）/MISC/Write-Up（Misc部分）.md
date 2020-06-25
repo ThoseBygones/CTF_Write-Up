@@ -7,59 +7,6 @@
 
 
 
-## Test-flag-please-ignore
-
-+ 下载附件压缩包并解压，发现一个无后缀的文件 **misc10** 。
-
-+ 右键用 **Notepad++** 打开，发现文件里就一串字符串：
-
-  > 666c61677b68656c6c6f5f776f726c647d
-
-+ 看着像是十六进制数，猜测可能俩俩凑个对可以构成一个 ASCII 码对应的字符。
-
-+ 于是写个简简单单的 Python 脚本 **trans.py** ：
-
-```python
-code = "666c61677b68656c6c6f5f776f726c647d"
-
-flag = ""
-
-for i in range(0, len(code)):
-    if i % 2 == 0:
-        tmpstr = code[i]
-    else:
-        tmpstr += code[i]
-        flag += chr(int(tmpstr, 16))
-        
-print(flag)
-```
-
-+ 输出的内容即为 flag 。
-+ flag: **flag{hello_world}**
-
-
-
-## wireshark-1
-
-+ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
-+ 果断上 **wireshark** ，查看数据包内容。
-+ 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
-
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/1.png?raw=true)
-
-+ 发现第二个 **HTML包** 的内容是一个 **php网站** 的登录操作，故右键选择 **追踪流** -> **TCP流**
-
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/2.png?raw=true)
-
-+ 仔细查看流的内容即可发现其中隐藏着 flag ——登录的 **email** 字段值为 **flag** ，**password** 字段值即为我们要的 flag 。
-
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/3.png?raw=true)
-
-+ 也可以在弹出来的框底部的 **查找** 中直接查找字段 **flag** 。
-+ flag: **flag{ffb7567a1d4f4abdffdb54e022f8facd}**
-
-
-
 ## pdf
 
 + 附件是一个 **pdf** 文件，打开就是一张图片，看起来没什么特别的。
@@ -99,6 +46,138 @@ print(flag)
 + 这会儿再**在线 Base64 解码**一下，得到 flag 。
 
 + flag: **flag{bdscjhbkzmnfrdhbvckijndskvbkjdsab}**
+
+
+
+## base64÷4
+
++ 下载附件压缩包并解压，发现一个后缀为 **.txt** 的文件。
+
++ 打开看到一串字符串：
+
+  > 666C61677B45333342374644384133423834314341393639394544444241323442363041417D
+
++ 看起来很像是十六进制数，而且题目的名字就是 “base64÷4”，因此猜测可能俩俩凑个对可以构成一个 ASCII 码对应的字符。
+
++ 于是写个简简单单的 Python 脚本 **trans.py** ：
+
+```python
+code = "666C61677B45333342374644384133423834314341393639394544444241323442363041417D"
+
+flag = ""
+
+for i in range(0, len(code)):
+    if i % 2 == 0:
+        tmpstr = code[i]
+    else:
+        tmpstr += code[i]
+        flag += chr(int(tmpstr, 16))
+        
+print(flag)
+```
+
++ 输出的内容即为 flag 。
++ flag: **flag{E33B7FD8A3B841CA9699EDDBA24B60AA}**
+
+
+
+## János-the-Ripper
+
++ 下载附件压缩包并解压，发现一个无后缀的文件 **misc100** 。
++ 果断丢进 **WinHex** 里面查看，发现文件头出现 **PK** 字段，说明这是个 **.zip** 压缩包文件。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/J%C3%A1nos-the-Ripper/1.png?raw=true)
+
++ 将文件后缀改为 **.zip** ，然后解压缩，解压缩的时候发现需要密码，题目却并没有给任何提示...
++ 于是使用工具 **ARCHPR** 尝试爆破口令，勾上 “所有大写拉丁文(A - Z)” ， “所有小写拉丁文(a - z)” 和 “所有数字(0 - 9)” 三个勾选框，长度先设为 4 ，开始爆破... 瞬间得到密码 “**fish**” ：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/J%C3%A1nos-the-Ripper/2.png?raw=true)
+
++  用该密码解压 **flag.txt** 后打开即可看到 flag 。
++ flag: **flag{ev3n::y0u::bru7us?!}**
+
+
+
+## Test-flag-please-ignore
+
++ 下载附件压缩包并解压，发现一个无后缀的文件 **misc10** 。
+
++ 右键用 **Notepad++** 打开，发现文件里就一串字符串：
+
+  > 666c61677b68656c6c6f5f776f726c647d
+
++ 看着像是十六进制数，猜测可能俩俩凑个对可以构成一个 ASCII 码对应的字符。
+
++ 于是写个简简单单的 Python 脚本 **trans.py** ：
+
+```python
+code = "666c61677b68656c6c6f5f776f726c647d"
+
+flag = ""
+
+for i in range(0, len(code)):
+    if i % 2 == 0:
+        tmpstr = code[i]
+    else:
+        tmpstr += code[i]
+        flag += chr(int(tmpstr, 16))
+        
+print(flag)
+```
+
++ 输出的内容即为 flag 。
++ flag: **flag{hello_world}**
+
+
+
+## What-is-this
+
++ 下载附件压缩包并解压，发现一个没有后缀的文件。
++ 丢进 WinHex 查看内容，并没有发现有什么文件类型标志。
++ 于是打开 Kali Linux 系统，把文件复制进去 **binwalk** 一下。这个没有后缀的文件在 Linux 文件系统下显示的是 **Gzip archive (application/gzip)** ，猜测是个压缩包，binwalk 的结果也证实了这一点：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/What-is-this/1.png?raw=true)
+
++ 于是将文件的后缀改为 **.zip** ，解压缩得到两张图片 **pic1.jpg** 和 **pic2.jpg** 。两张图片看起来十分像，都是杂乱的分布着黑白像素点。猜测可能 **combine** 一下也许会变出个二维码什么的，于是使用工具 **Stegsolve** 中的 **Image Combiner** 功能把两张图合成一下。
++ 合成的图片中并没有二维码，却是一个字符串 “**AZADI TOWER**” ，即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/What-is-this/2.png?raw=true)
+
++ flag: **AZADI TOWER**
+
+
+
+## wireshark-1
+
++ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
++ 果断上 **wireshark** ，查看数据包内容。
++ 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/1.png?raw=true)
+
++ 发现第二个 **HTML包** 的内容是一个 **php网站** 的登录操作，故右键选择 **追踪流** -> **TCP流**
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/2.png?raw=true)
+
++ 仔细查看流的内容即可发现其中隐藏着 flag ——登录的 **email** 字段值为 **flag** ，**password** 字段值即为我们要的 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/3.png?raw=true)
+
++ 也可以在弹出来的框底部的 **查找** 中直接查找字段 **flag** 。
++ flag: **flag{ffb7567a1d4f4abdffdb54e022f8facd}**
+
+
+
+## Training-Stegano-1
+
++ 下载附件发现是一个 **.bmp** 图片文件。
++ 打开图片，发现这个图片非常非常奇怪，尺寸非常小，放大好几倍看发图片现没什么有价值的内容，图片只是些色块。
++ 题目提示 “这是我能想到的最基础的图片隐写术” ，于是想到了在 Kali Linux 里面用 **zsteg** 处理一波，但是折腾了半天，什么都没有找到。
++ 于是丢进 **WinHex** 里面看看图片里有没有藏着什么东西，于是在文件末尾发现一段字符串 “**passwd:steganoI**” ，就成功的得到了 flag ...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Training-Stegano-1/1.png?raw=true)
+
++ flag: **steganoI**
 
 
 
@@ -166,6 +245,18 @@ img.save("result.png")
 
 + 丢到在线二维码识别网站 https://cli.im/deqr/ 上识别，得到一个字符串就是flag。
 + flag: **NCTF{m1sc_1s_very_funny!!!}**
+
+
+
+## easycap
+
++ 下载文件，发现是一个 **.pcap** 文件。
++ 果断用 **wireshark** 打开，查看数据包，发现全是 **TCP** 数据包...
++ 于是直接右键 -> **追踪流** -> **TCP流**，然后在弹出的窗口中直接就能看到 flag ...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/easycap/1.png?raw=true)
+
++ flag: **FLAG:385b87afc8671dee07550290d16a8071**
 
 
 
