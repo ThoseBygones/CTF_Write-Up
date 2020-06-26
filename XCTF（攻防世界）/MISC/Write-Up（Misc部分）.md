@@ -12,7 +12,9 @@
 + 附件是一个 **pdf** 文件，打开就是一张图片，看起来没什么特别的。
 + 丢进 **WinHex** 里面查看，查找 **flag** 字符串，也没发现什么东西。
 + 放进 **Kali Linux** 里面尝试 `binwalk` 一下，也没发现什么隐藏着什么文件。
-+ ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/pdf/1.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/pdf/1.png?raw=true)
+
 + 于是找了个有编辑 pdf 功能的 pdf 阅读器（编辑器），试图把这张图片从 pdf 文件中抠下来。
 + 然后就神奇的发现，flag 就藏在图片后面，原来是被图片挡住了...
 + flag: **flag{security_through_obscurity}**
@@ -147,10 +149,31 @@ print(flag)
 
 
 
+## embarrass
+
++ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
++ 果断上 **wireshark** ，查看内容，发现拦截到的数据包种类非常多，大部分是 **TCP 包**，还有少量的 **HTTP 包**、**FTP-DATA 包**等等。内容太多不知道从哪来开始找 flag ，于是考虑在 Kali Linux 系统下 **binwalk** 或者利用 **foremost** 找，找到各种 xml 文档，htm/html 页面以及少量的 doc 文件甚至一个 jpg 文件（打开发现还是张有问题的图片），但是没有什么有用的内容。
++ 无奈之下回归 wireshark ，开始追踪流。首先**对 HTTP 包追踪 HTTP 流**，然后在弹出的窗口底部查找 “flag” 字符串，但一无所获。
++ 注意到 **FTP-DATA 包**，于是尝试**追踪 TCP 流**，并在弹出的窗口底部查找 “flag” 字符串，成功搜索到 flag ：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/embarrass/1.png?raw=true)
+
++ 另解，还可以通过 Linux 下的 **strings** 来查找文件里的字符串数据：
+
+  > <code>strings misc_02.pcapng | grep flag</code>
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/embarrass/2.png?raw=true)
+
++ 因此同样可以把数据包丢进 **WinHex** 内然后查找 flag 字段...
+
++ flag: **flag{Good_b0y_W3ll_Done}**
+
+
+
 ## wireshark-1
 
 + 下载附件压缩包并解压，发现一个 **.pcap** 文件。
-+ 果断上 **wireshark** ，查看数据包内容。
++ 果断上 **wireshark** ，查看拦截到的数据包。
 + 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/1.png?raw=true)
@@ -165,6 +188,18 @@ print(flag)
 
 + 也可以在弹出来的框底部的 **查找** 中直接查找字段 **flag** 。
 + flag: **flag{ffb7567a1d4f4abdffdb54e022f8facd}**
+
+
+
+## pure_color
+
++ 下载附件发现是一个 **.bmp** 图片文件。
++ 打开图片，发现是一张空白的图片... 感觉不能这么简单，于是丢进 **StegSolve** 里面查看。
++ 翻了好几个图层以后，在 **Blue plane 0** 层看到隐藏的 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/pure_color/1.png?raw=true)
+
++ flag: **flag{true_steganographers_doesnt_need_any_tools}**
 
 
 
@@ -296,4 +331,39 @@ for s in string:
 >  Flag: ISCC{N0_0ne_can_st0p_y0u}
 
 + flag: **ISCC{N0_0ne_can_st0p_y0u}**
+
+
+
+## Excaliflag
+
++ 下载附件，发现是一个 **.png** 文件。
++ 打开文件发现这是张很普通的图片，除了图片是一个旗子（flag）插在一片绿油油的草地上（逗我么...）
++ 先用图片隐写工具 **Stegsolve** 分离各个图层的图片试试，翻了几个图层就发现某些图层能隐隐约约看到图片里隐藏了一串字符串。
++ 最后在 **Gray bits** 层发现非常清晰的隐藏字符串，即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Excaliflag/1.png?raw=true)
+
++ flag: **3DS{Gr4b_Only_th1s_B1ts}**
+
+
+
+## 签到题
+
++ 题目描述真直白：“SSCTF线上选举美男大赛开始了，泰迪拿着他的密码去解密了，提交花括号内内容（Z2dRQGdRMWZxaDBvaHRqcHRfc3d7Z2ZoZ3MjfQ==）”。
+
++ 然而这个签到题并没这么简单，直接把 “Z2dRQGdRMWZxaDBvaHRqcHRfc3d7Z2ZoZ3MjfQ==” 当做 flag 提交并不能通过。
+
++ 这个字符串结尾有两个 **=** ，看起来非常像是 **Base64** 编码，于是用 **[在线 Base64编码解码](https://base64.us/)** 网站在线解码，得到一个新的字符串：
+
+  > ggQ@gQ1fqh0ohtjpt_sw{gfhgs#}
+
++ 这显然不可能是 flag ，考虑到 flag 的格式应该是 xxxx{xxxx..xxxx}，而题目来源又是 **SSCTF-2017** ，猜测 flag 的格式应该是 **SSCTF{xxx...xxx}** ，而刚得到的字符串中，花括号前面的字段显然太长了，猜测可能是用某种密码（**栅栏密码**）加密过的（别问为什么是栅栏密码，以前做过 Crypto 题，这种密码的形式一看就是栅栏密码...），于是用 **[栅栏密码在线加密解密](https://www.qqxiuzi.cn/bianma/zhalanmima.php)** 网站在线解密，得到一个新的字符串：
+
+  > ggqht{ggQht_gsQ10jsf#@fopwh}
+
++ 显然这仍然不是 flag ... 根据上面的分析，flag 的格式应该是 **SSCTF{xxx...xxx}** ，这个形式已经接近了，但是字母不对。仔细观察，发现 **gg** 可能对应 flag 中的 **SS** ，因此考虑可能字符串又被**凯撒密码**加密过，于是用 **[凯撒密码在线加密解密](https://www.qqxiuzi.cn/bianma/kaisamima.php)** 网站在线解密，得到最后的 flag 。
+
++ 三层加密，疯狂加密，**禁止套娃**啊喂...
+
++ flag: **ssctf{ssCtf_seC10ver#@rabit}**
 
