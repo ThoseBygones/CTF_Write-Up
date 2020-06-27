@@ -45,7 +45,7 @@
 
   > ZmxhZ3tiZHNjamhia3ptbmZyZGhidmNraWpuZHNrdmJramRzYWJ9
 
-+ 这会儿再**[在线 Base64 解码](https://base64.us/)**一下，得到 flag 。
++ 这会儿再 **[在线 Base64 解码](https://base64.us/)** 一下，得到 flag 。
 
 + flag: **flag{bdscjhbkzmnfrdhbvckijndskvbkjdsab}**
 
@@ -250,12 +250,12 @@ print(flag)
 
 + 下载附件发现是一个 **.gif** 图片文件。
 + 打开图片，发现这个图片的尺寸很奇怪，呈细长条形的，宽度非常非常小，看不清楚图片的内容，仔细看也只能看到动图随着时间帧的变化图片中有什么东西在滚动播放或者平移（或者别的方式移动）...
-+ 于是考虑将其按照时间帧分解，这里可以使用 **Stegsolve** 的 **Frame Browser** 分解后保存每一帧，也可以使用别的专业图片处理软件保存每一帧，甚至也可以使用**在线[GIF动态图片分解](https://tu.sioe.cn/gj/fenjie/)**。
++ 于是考虑将其按照时间帧分解，这里可以使用 **Stegsolve** 的 **Frame Browser** 分解后保存每一帧，也可以使用别的专业图片处理软件保存每一帧，甚至也可以使用 **在线[GIF动态图片分解](https://tu.sioe.cn/gj/fenjie/)**。
 + 没想到这个网站直接将分解后的图片按照时间帧顺序平铺在页面上展示出来，于是直接看到图片的内容，其中有一段字符串，即为 flag 。
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/glance-50/1.png?raw=true)
 
-+ 附上在线图片拼接网站：**在线[图片拼接——免费在线拼接多个图片成长图](http://www.zuohaotu.com/image-merge.aspx)**。
++ 附上在线图片拼接网站：**在线[图片拼接——免费在线拼接多个图片成长图](http://www.zuohaotu.com/image-merge.aspx)** 。
 + flag: **TWCTF{Bliss by Charles O'Rear}**
 
 
@@ -335,7 +335,7 @@ img.save("result.png")
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/result.png?raw=true)
 
-+ 丢到**[在线二维码识别网站](https://cli.im/deqr/)**上识别，得到一个字符串就是flag。
++ 丢到 **[在线二维码识别网站](https://cli.im/deqr/)** 上识别，得到一个字符串就是flag。
 + flag: **NCTF{m1sc_1s_very_funny!!!}**
 
 
@@ -381,7 +381,7 @@ for s in string:
 
 > V2VsbCBkb25lIQoKIEZsYWc6IElTQ0N7TjBfMG5lX2Nhbl9zdDBwX3kwdX0K
 
-+ 猜测可能是Base64编码，立即推，丢到**[在线 Base64 编码解码](https://base64.us/)**网站上处理，得到如下内容：
++ 猜测可能是Base64编码，立即推，丢到 **[在线 Base64 编码解码](https://base64.us/)** 网站上处理，得到如下内容：
 
 > Well done!
 >
