@@ -63,11 +63,14 @@
 
 + 在过滤器中筛选出 Modbus/TCP 数据包，右键 -> **追踪流** -> **TCP流** ，发现新窗口中显示出一些奇奇怪怪的内容：
 
-
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E7%A5%9E%E5%A5%87%E7%9A%84Modbus/1.png?raw=true)
 
 + 粗略查看发现一些类似 flag 形式的字段（字符之间用空格隔开了），由于混着客户端分组和服务器分组，因此在窗口的底部选择 **192.168.120.120:052 -> 192.168.130.1:62234 (34KB)** （即服务器向客户端发送的分组），查看筛选后的数据后，可以看到如下一段类似 flag 的字段：
 
   > s.c.t.f.{.E.a.s.y._.M.d.b.u.s.}
+
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E7%A5%9E%E5%A5%87%E7%9A%84Modbus/2.png?raw=true)
 
 + 去掉其中的 '.' 提交，发现不对，猜测可能出题者故意漏掉了 Modbus 中的字母 'o' ，补上提交即可通过。
 
@@ -158,7 +161,7 @@ print(flag)
 
 ## Banmabanma
 
-+ 下载附件，发现是一个 **.png** 文件。
++ 下载附件压缩包并解压，发现一个 **.png** 文件。
 
 + 打开图片，发现图片里是一只斑马，但是背上的斑纹挺奇怪的，看起来像个条形码XD
 
