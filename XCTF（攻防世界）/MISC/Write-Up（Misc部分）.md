@@ -33,7 +33,7 @@
 
 + 但是 ROT13 是用来处理英文字母的，不能直接处理中文字符，因此还需要先进行一步别的处理。
 
-+ 然而 **rot13** 不是用来加解密中文的，因此还需要先进行一步别的解密。
++ 然而 rot13 不是用来加解密中文的，因此还需要先进行一步别的解密。
 
 + 百度了半天与佛经加解密相关的东西，终于找到了这个网站 **[与佛论禅](http://www.keyfc.net/bbs/tools/tudoucode.aspx)**  。按照说明解密，得到一串字符串：
 
@@ -45,7 +45,7 @@
 
   > ZmxhZ3tiZHNjamhia3ptbmZyZGhidmNraWpuZHNrdmJramRzYWJ9
 
-+ 这会儿再**在线 Base64 解码**一下，得到 flag 。
++ 这会儿再**[在线 Base64 解码](https://base64.us/)**一下，得到 flag 。
 
 + flag: **flag{bdscjhbkzmnfrdhbvckijndskvbkjdsab}**
 
@@ -179,7 +179,7 @@ print(flag)
 
 + 下载附件压缩包并解压，发现一个没有后缀的文件。
 + 丢进 WinHex 查看内容，并没有发现有什么文件类型标志。
-+ 于是打开 Kali Linux 系统，把文件复制进去 **binwalk** 一下。这个没有后缀的文件在 Linux 文件系统下显示的是 **Gzip archive (application/gzip)** ，猜测是个压缩包，binwalk 的结果也证实了这一点：
++ 于是打开 Kali Linux 系统，把文件复制进去 `binwalk` 一下。这个没有后缀的文件在 Linux 文件系统下显示的是 **Gzip archive (application/gzip)** ，猜测是个压缩包，`binwalk` 的结果也证实了这一点：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/What-is-this/1.png?raw=true)
 
@@ -195,13 +195,13 @@ print(flag)
 ## embarrass
 
 + 下载附件压缩包并解压，发现一个 **.pcap** 文件。
-+ 果断上 **wireshark** ，查看内容，发现拦截到的数据包种类非常多，大部分是 **TCP 包**，还有少量的 **HTTP 包**、**FTP-DATA 包**等等。内容太多不知道从哪来开始找 flag ，于是考虑在 Kali Linux 系统下 **binwalk** 或者利用 **foremost** 找，找到各种 xml 文档，htm/html 页面以及少量的 doc 文件甚至一个 jpg 文件（打开发现还是张有问题的图片），但是没有什么有用的内容。
++ 果断上 **wireshark** ，查看内容，发现拦截到的数据包种类非常多，大部分是 **TCP 包**，还有少量的 **HTTP 包**、**FTP-DATA 包**等等。内容太多不知道从哪来开始找 flag ，于是考虑在 Kali Linux 系统下 `binwalk` 或者利用 `foremost` 找，找到各种 xml 文档，htm/html 页面以及少量的 doc 文件甚至一个 jpg 文件（打开发现还是张有问题的图片），但是没有什么有用的内容。
 + 无奈之下回归 wireshark ，开始追踪流。首先**对 HTTP 包追踪 HTTP 流**，然后在弹出的窗口底部查找 “flag” 字符串，但一无所获。
 + 注意到 **FTP-DATA 包**，于是尝试**追踪 TCP 流**，并在弹出的窗口底部查找 “flag” 字符串，成功搜索到 flag ：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/embarrass/1.png?raw=true)
 
-+ 另解，还可以通过 Linux 下的 **strings** 来查找文件里的字符串数据：
++ 另解，还可以通过 Linux 下的 `strings` 来查找文件里的字符串数据：
 
   > <code>strings misc_02.pcapng | grep flag</code>
 
@@ -246,11 +246,25 @@ print(flag)
 
 
 
+## glance-50
+
++ 下载附件发现是一个 **.gif** 图片文件。
++ 打开图片，发现这个图片的尺寸很奇怪，呈细长条形的，宽度非常非常小，看不清楚图片的内容，仔细看也只能看到动图随着时间帧的变化图片中有什么东西在滚动播放或者平移（或者别的方式移动）...
++ 于是考虑将其按照时间帧分解，这里可以使用 **Stegsolve** 的 **Frame Browser** 分解后保存每一帧，也可以使用别的专业图片处理软件保存每一帧，甚至也可以使用**在线[GIF动态图片分解](https://tu.sioe.cn/gj/fenjie/)**。
++ 没想到这个网站直接将分解后的图片按照时间帧顺序平铺在页面上展示出来，于是直接看到图片的内容，其中有一段字符串，即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/glance-50/1.png?raw=true)
+
++ 附上在线图片拼接网站：**在线[图片拼接——免费在线拼接多个图片成长图](http://www.zuohaotu.com/image-merge.aspx)**。
++ flag: **TWCTF{Bliss by Charles O'Rear}**
+
+
+
 ## Training-Stegano-1
 
 + 下载附件发现是一个 **.bmp** 图片文件。
 + 打开图片，发现这个图片非常非常奇怪，尺寸非常小，放大好几倍看发图片现没什么有价值的内容，图片只是些色块。
-+ 题目提示 “这是我能想到的最基础的图片隐写术” ，于是想到了在 Kali Linux 里面用 **zsteg** 处理一波，但是折腾了半天，什么都没有找到。
++ 在线1)是折腾了半天，什么都没有找到。
 + 于是丢进 **WinHex** 里面看看图片里有没有藏着什么东西，于是在文件末尾发现一段字符串 “**passwd:steganoI**” ，就成功的得到了 flag ...
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Training-Stegano-1/1.png?raw=true)
@@ -263,20 +277,20 @@ print(flag)
 
 + 下载压缩包解压以后看到一张很普通的表情包：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/a_good_idea/001.jpg?raw=true)
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/001.jpg?raw=true)
 
 + 常规操作丢进 **WinHex** 里面查看代码：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/a_good_idea/002.jpg?raw=true)
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/002.jpg?raw=true)
 
 + 看到 **PK** 字段以及目录下的一个 **txt** 文件和两个 **png** 文件，就知道这个图片其实隐藏着一个压缩包。
 + 将后缀改为 **.zip** ，解压以后得到三个文件：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/a_good_idea/003.jpg?raw=true)
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/003.jpg?raw=true)
 
 + 解压，发现两个 **png** 文件是两个 ~~几乎一模一样~~ 的表情包；于是打开 **hint.txt** 看到提示：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/a_good_idea/004.jpg?raw=true)
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/004.jpg?raw=true)
 
 + 猜测可能是要找两个几乎一模一样的图片不同的像素点？
 + 于是写 **Python** 脚本，用 **PIL** 库的 **Image** 来处理图片，代码如下：
@@ -319,9 +333,9 @@ img.save("result.png")
 
 + 生成的图片是个二维码：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/a_good_idea/result.png?raw=true)
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/result.png?raw=true)
 
-+ 丢到在线二维码识别网站 https://cli.im/deqr/ 上识别，得到一个字符串就是flag。
++ 丢到**[在线二维码识别网站](https://cli.im/deqr/)**上识别，得到一个字符串就是flag。
 + flag: **NCTF{m1sc_1s_very_funny!!!}**
 
 
@@ -367,7 +381,7 @@ for s in string:
 
 > V2VsbCBkb25lIQoKIEZsYWc6IElTQ0N7TjBfMG5lX2Nhbl9zdDBwX3kwdX0K
 
-+ 猜测可能是Base64编码，立即推，丢到在线Base64编码解码网站 https://base64.us/ 处理，得到如下内容：
++ 猜测可能是Base64编码，立即推，丢到**[在线 Base64 编码解码](https://base64.us/)**网站上处理，得到如下内容：
 
 > Well done!
 >
