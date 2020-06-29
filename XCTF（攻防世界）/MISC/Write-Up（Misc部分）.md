@@ -175,6 +175,23 @@ print(flag)
 
 
 
+## Hear-with-your-Eyes
+
++ 下载附件，发现一个没有后缀的文件。
++ 丢到 **WinHex** 里发现很大，也没看出什么名堂来，于是放进 **Kali Linux** 中，发现系统显示该文件为 **Gzip archive (application/gzip)，即压缩包文件**。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Hear-with-your-Eyes/1.png?raw=true)
+
++ 修改后缀为 **.zip** 并解压缩，发现一个 **sound.wav** 文件，打开播放，发现是一段长度为 10 秒的鬼畜音频（不能算音乐吧）...
++ 题目提示 “用眼睛听这段音频” ，猜想需要搞个音频处理软件啥的来看看这段音频有没有藏着什么东西，于是用 **Audacity** 打开音乐文件。
++ 默认显示的是这段音频的**波形**，波形没有什么特别的，于是切换到**频谱图**，然后就看到了用频谱硬生生 “画” 出来的 flag 字符串...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Hear-with-your-Eyes/2.png?raw=true)
+
++ flag: **e5353bb7b57578bd4da1c898a8e2d767**
+
+
+
 ## What-is-this
 
 + 下载附件压缩包并解压，发现一个没有后缀的文件。
@@ -208,8 +225,81 @@ print(flag)
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/embarrass/2.png?raw=true)
 
 + 因此同样可以把数据包丢进 **WinHex** 内然后查找 flag 字段...
-
 + flag: **flag{Good_b0y_W3ll_Done}**
+
+
+
+## MISCall
+
++ 下载附件，发现又是一个没有后缀的文件...
++ 用 **WinHex** 打开，发现文件开头出现字段 `BZh91AY&SY` ，百度得知这是 **.bz2** 文件的文件头，于是打开 **Kali Linux** 在终端用 `tar -jxvf` 命令解压文件。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/1.png?raw=true)
+
++ 仔细查看解压的详细过程，发现解压得到的文件像是某个项目或者 repo 的 **git 目录** 。其中有个 **flag.txt** 文件没有被隐藏，打开后却只看到一行字：
+
+  > Nothing to see here, moving along...
+
++ 查看其它被隐藏的 **.git 文件夹**中的文件，没看出什么东西，于是百度 git 命令，在终端对该文件夹进行操作。
+
++ 首先是用 `git log`  和 `git log all` 命令查看版本演变历史和所有分支的历史：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/2.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/3.png?raw=true)
+
++ 发现有演变历史，显示最近有上传一个文件夹，但是目录中并不存在，于是再用 `git stash list` 命令查看当前 stash 中内容的列表：
+
+  > `git stash` 能够将所有未提交的修改（工作区和暂存区）保存至堆栈中，用于后续恢复当前工作目录。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/4.png?raw=true)
+
++ 发现列表里是有东西的，于是进一步使用 `git stash show` 命令查看堆栈中最新保存的stash和当前目录的差异，发现 stash 中有个 **s.py** 文件，还有个 **flag.txt** 文件：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/5.png?raw=true)
+
++ 于是用 `git stash apply` 命令将堆栈中的内容应用到当前目录，即可在目录中看到 **s.py** 文件和**新的 flag.txt** 文件：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/6.png?raw=true)
+
++ 打开 flag.txt 文件，发现一大段内容，像是一封电子邮件...
+
+  > From: mailto: torvalds@klaava.Helsinki.Fi (Linus Benedict Torvalds)
+  > To: Newsgroups: comp.os.inix
+  > Subject: What would you like to see most in minix?
+  > Summary: small poll for my new operating system
+  > Message-ID: <mailto: 1991Aug25.205708.9541@klaava.Helsinki.Fi
+  >
+  > Hello everybody out there using minix — I’m doing a (free) operating
+  > system (just a hobby, won’t be big and professional like gnu) for 386
+  > (486) AT clones. This has been brewing since april, and is starting to
+  > get ready. I’d like any feedback on things people like/dislike in
+  > minix, as my OS resembles it somewhat (same physical layout of the
+  > file-system (due to practical reasons) among other things).
+  >
+  > I’ve currently ported bash (1.08) and gcc (1.40), and things seem to
+  > work. This implies that I’ll get something practical within a few
+  > months, and I’d like to know what features most people would want. Any
+  > suggestions are welcome, but I won’t promise I’ll implement them :-).
+  >
+  > Linus (mailto: torvalds@klaava.helsinki.fi)
+  >
+  > PS. Yes — it’s free of any minix code, and it has a multi-threaded fs.
+  > It is NOT protable (uses 386 task switching etc), and it probably
+  > never will support anything other than AT-harddisks, as that’s all I
+  > have :-(.
+
++ 而 s.py 文件看起来则像是处理 flag.txt 文件的：
+
+```python
+#!/usr/bin/env python
+from hashlib import sha1
+with open("flag.txt", "rb") as fd:
+    print "NCN" + sha1(fd.read()).hexdigest()
+```
+
++ 于是在终端输入 `python s.py` 命令，得到一串字符串，即为 flag 。
++ flag: **NCN4dd992213ae6b76f27d7340f0dde1222888df4d3**
 
 
 
