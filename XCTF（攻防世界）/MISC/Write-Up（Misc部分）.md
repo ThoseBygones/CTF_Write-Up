@@ -336,6 +336,53 @@ with open("flag.txt", "rb") as fd:
 
 
 
+### 2017_Dating_in_Singapore
+
++ 下载附件，发现一个 **.pdf** 文件，文件内容是张 2017 年的新加坡日历（？？？）
+
++ 题目描述给了一串数字，这串数字分好几段，每段之间用 '-' 隔开：
+
+  > 01081522291516170310172431-050607132027262728-0102030209162330-02091623020310090910172423-02010814222930-0605041118252627-0203040310172431-0102030108152229151617-04050604111825181920-0108152229303124171003-261912052028211407-04051213192625
+
++ 仔细观察发现这串数字分为 12 段，猜测每段数字可能对应一个月份。
+
++ 于是将每个分段中的每两个数字对应一个日期，在日历上标记出来。然后就很神奇的发现，每个分段在每月的日历上标记出来的结果对应一个字符，12 个字符合起来就是 flag ...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/2017_Dating_in_Singapore/1.png?raw=true)
+
++ flag: **HITB{CTFFUN}**
+
+
+
+## hit-the-core
+
++ 下载附件，发现一个文件后缀为 **.core** 的文件。
+
++ 完全不知道用什么软件能打开，先用 **Notepad++** 或者 **WinHex** 打开瞧瞧，发现文件最前面几个可打印字符写着 **ELF** ，于是打开 **Kali Linux** 系统，使用 `strings` 命令查看可打印字符，发现其中有一串很长很长的字符串，带有 '{' 和 '}' ，很有可能是 flag ：
+
+  > cvqAeqacLtqazEigwiXobxrCrtuiTzahfFreqc{bnjrKwgk83kgd43j85ePgb_e_rwqr7fvbmHjklo3tews_hmkogooyf0vbnk0ii87Drfgh_n kiwutfb0ghk9ro987k5tfb_hjiouo087ptfcv}
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/hit-the-core/1.png?raw=true)
+
++ 但是完全没有规律，考虑到可能被打乱或者被加密，于是用 **[栅栏密码在线加密解密](https://www.qqxiuzi.cn/bianma/zhalanmima.php) 网站**尝试每组字数为不同值时候的结果，一直从 2 试到 26 都没有找到正确的 flag 。
++ 于是试图找规律。由于题目来源为 **alexctf** ，猜测 '{' 和 '}' 前很可能是 alexctf ，即 flag 的形式很可能是 **alexctf{xxx...xxx}** ，于是开始查找，发现从第 4 个字符开始，每隔 5 个字符正好能够成 flag 的形式，于是写了个简简单单的 Python 脚本 **solve.py** ：
+
+```python
+msg = "cvqAeqacLtqazEigwiXobxrCrtuiTzahfFreqc{bnjrKwgk83kgd43j85ePgb_e_rwqr7fvbmHjklo3tews_hmkogooyf0vbnk0ii87Drfgh_n kiwutfb0ghk9ro987k5tfb_hjiouo087ptfcv}"
+
+flag = ""
+
+for i in range(3, len(msg), 5):
+    flag += msg[i]
+    
+print(flag)
+```
+
++ 输出即为 flag 。
++ flag: **ALEXCTF{K33P_7H3_g00D_w0rk_up}**
+
+
+
 ## glance-50
 
 + 下载附件发现是一个 **.gif** 图片文件。
