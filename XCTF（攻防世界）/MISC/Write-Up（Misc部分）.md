@@ -51,6 +51,24 @@
 
 
 
+## give_you_flag
+
++ 下载附件，是一个 **.gif** 文件。
++ 打开看到就是一只很萌的小龙在数钱，但是看完完整的内容会发现，动图的最后几帧似乎有一个小小的类似二维码的东西一闪而过。
++ 于是使用 **Stegsolve** 打开，然后使用 **Frame Browser** 功能找到有二维码的那一帧并保存下来。
++ 保存下来打开后发现，这个 “二维码” 并不完整，左上角、左下角、右上角一共三个定位点都缺失，而且图片中的二维码比较小，所以直接扫码识别是无法识别出来的，需要用图片处理软件处理一下：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/give_you_flag/give_you_flag.png?raw=true)
+
++ 于是 P 图开始了，直接用画图就可以搞定了：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/give_you_flag/QRCode.png?raw=true)
+
++ P 完后可以使用微信扫一扫或者使用 **[在线二维码解码器](https://jiema.wwei.cn/)** 或者 **[草料二维码解码器](https://cli.im/deqr/)** 在线解码，即可得到 flag。
++ flag: **flag{e7d478cf6b915f50ab1277f78502a2c5}**
+
+
+
 ## 神奇的Modbus
 
 + 下载附件压缩包并解压，发现一个 **.pcap** 文件。
