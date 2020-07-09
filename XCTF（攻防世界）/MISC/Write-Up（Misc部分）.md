@@ -51,6 +51,34 @@
 
 
 
+## 掀桌子
+
++ 题目中给了密文：
+
+  > c8e9aca0c6f2e5f3e8c4efe7a1a0d4e8e5a0e6ece1e7a0e9f3baa0e8eafae3f9e4eafae2eae4e3eaebfaebe3f5e7e9f3e4e3e8eaf9eaf3e2e4e6f2
+
++ 仔细观察发现每个字符像是十六进制数，直接拿去解密并不能得到说明有用的信息，于是考虑每两个一组然后转化为 ASCII 码字符。转换后发现全是一些扩展 ASCII 码的字符，显示出来的结果乱七八糟——因为每两个字符一组构成的十六进制字符转换为十进制后值均大于 128 。
+
++ 于是考虑把最高位的 1 给屏蔽掉（毕竟 ASCII 码实际上只有 7 位有效），于是写个简简单单的脚本即可得到明文：
+
+  > Hi, FreshDog! The flag is: hjzcydjzbjdcjkzkcugisdchjyjsbdfr
+
+```python
+msg = "c8e9aca0c6f2e5f3e8c4efe7a1a0d4e8e5a0e6ece1e7a0e9f3baa0e8eafae3f9e4eafae2eae4e3eaebfaebe3f5e7e9f3e4e3e8eaf9eaf3e2e4e6f2"
+
+for i in range(0, len(msg), 2):
+    offset_val = int(msg[i] + msg[i+1], 16) & 127
+    ch = chr(offset_val)
+    print(ch, end="")
+
+print("")
+```
+
++ **这题的坑点是，flag 的形式不是 ddctf{xxx...xxx}，也不是DDCF{xxx...xxx}，同样也不是直接提交那一串字符串。flag 的形式是 flag{xxx...xxx}，然而题目中并没有说明orz...**
++ flag: **flag{hjzcydjzbjdcjkzkcugisdchjyjsbdfr}**
+
+
+
 ## give_you_flag
 
 + 下载附件，是一个 **.gif** 文件。
@@ -66,6 +94,91 @@
 
 + P 完后可以使用微信扫一扫或者使用 **[在线二维码解码器](https://jiema.wwei.cn/)** 或者 **[草料二维码解码器](https://cli.im/deqr/)** 在线解码，即可得到 flag。
 + flag: **flag{e7d478cf6b915f50ab1277f78502a2c5}**
+
+
+
+## 坚持60s
+
++ 下载附件，发现是一个 **.jar** 文件。
++ 在安装了 Java 的环境下打开，发现是一个~~有趣~~（智障）的小游戏，键盘的 “上下左右” 键操作一个图片躲避一堆满屏幕乱跑（而且越跑越快）的 “绿帽子” 图片。
++ 经过多次失败的尝试以后发现，把图片移动到屏幕的**右上角**或者**右下角**但是不要移除屏幕可视范围（否则就移不回来了）即可：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%9D%9A%E6%8C%8160s/1.png?raw=true)
+
++ 60 秒以后再移动出来 “自杀” ，即可在屏幕上看到一串类似 flag 的字符串：
+
+  > flag{RGFqaURhbGlfSmlud2FuQ2hpamk=}
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%9D%9A%E6%8C%8160s/2.png?raw=true)
+
++ **这里有个坑点是，貌似坚持了太久反而不显示 flag 字符串，所以坚持 60 秒多一点就可以马上出来自杀了。**
++ 然而把这串类似 flag 的字符串提交上去并不能通过，说明这并不是最终的 flag 。注意到这串字符串花括号内的部分似乎是 **Base 64 编码** 过的，因此使用 **[Base64 在线编码解码](https://base64.us/)** 网站在线解码，成功得到 flag 。
++ flag: **flag{DajiDali_JinwanChiji}**
+
+
+
+## gif
+
++ 下载压缩包，发现压缩包内有两个文件夹，其中文件夹里面有 104 张图片；解压后发现这些图片要么全黑要么全白...
+
++ 猜测全白和全黑的图片可能分别代表二进制的 0 和 1 ，但是需要分组。由于 ASCII 码是通过 8 个二进制位表示的，且 104 能被 8 整除，因此每八个二进制位一组，得到如下字符串：
+
+  > 01100110
+  > 01101100
+  > 01100001
+  > 01100111
+  > 01111011
+  > 01000110
+  > 01110101
+  > 01001110
+  > 01011111
+  > 01100111
+  > 01101001
+  > 01000110
+  > 01111101
+
++ 利用得到的字符串，写个简简单单的 Python 脚本转换一下即可得到 flag （**solve.py**）。
+
+```python
+val = ["01100110", 
+       "01101100", 
+       "01100001", 
+       "01100111", 
+       "01111011", 
+       "01000110", 
+       "01110101", 
+       "01001110", 
+       "01011111", 
+       "01100111", 
+       "01101001", 
+       "01000110", 
+       "01111101"
+       ]
+
+for i in val:
+    print(chr(int(i, 2)), end="")
+print("")
+```
+
++ flag: **flag{FuN_giF}**
+
+
+
+## ext3
+
++ 下载附件，发现一个无后缀的文件。
+
++ 根据题目的提示 “一个linux系统光盘” ，猜想可能需要使用 Linux 挂载光盘，于是创建文件夹 `/xctf` ，然后使用光盘挂载命令 `mount f1fc23f5c743425d9e0073887c846d23 xctf/` 。
+
++ 在挂载点所在的文件夹里发现许多文件夹，一下子无法找到 flag ，于是使用 `find ./ -name flag*` 查找当前目录下文件名中含有 “flag” 的目录或者文件，很顺利的找到了 `./O7avZhikgKgbF/flag.txt` 。
+
++ 直接打开这个文本文件，发现一串字符串：
+
+  > ZmxhZ3tzYWpiY2lienNrampjbmJoc2J2Y2pianN6Y3N6Ymt6an0=
+
++ 看起来很像是 **Base 64** 编码过的，于是使用 **[Base64 在线编码解码](https://base64.us/)** 网站在线解码，成功得到 flag 。
+
++ flag: **flag{sajbcibzskjjcnbhsbvcjbjszcszbkzj}**
 
 
 
