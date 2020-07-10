@@ -673,6 +673,22 @@ for s in string:
 
 
 
+## 小小的PDF
+
++ 下载附件，发现是一个 **.pdf** 文件。
++ 打开文件，一共两页，内容没什么营养：第一页上放了两张表情包；第二页空白，看起来十分可疑。
++ 于是打开 **Kali Linux** 系统，用 `binwalk` 命令查看一下，发现这个 pdf 文件包含了三个 JPEG 文件和三个 Zlib 压缩数据文件。而 pdf 中却只能看到两张 JPEG文件，显然有一张图片被隐藏了。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%B0%8F%E5%B0%8F%E7%9A%84PDF/1.png?raw=true)
+
++ 于是用 `foremost` 命令提取 pdf 中包含的文件，提取出来的三个 JPEG 文件中，前两个图片为 pdf 文件中显示的那两张表情包，第三张图片上显示了一串字符串，即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%B0%8F%E5%B0%8F%E7%9A%84PDF/2.png?raw=true)
+
++ flag: **SYC{so_so_so_easy}**
+
+
+
 ## Excaliflag
 
 + 下载附件，发现是一个 **.png** 文件。
