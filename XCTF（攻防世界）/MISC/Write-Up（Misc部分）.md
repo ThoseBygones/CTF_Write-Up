@@ -9,7 +9,7 @@
 
 ## pdf
 
-+ 附件是一个 **pdf** 文件，打开就是一张图片，看起来没什么特别的。
++ 附件是一个 ***.pdf*** 文件，打开就是一张图片，看起来没什么特别的。
 + 丢进 **WinHex** 里面查看，查找 **flag** 字符串，也没发现什么东西。
 + 放进 **Kali Linux** 里面尝试 `binwalk` 一下，也没发现什么隐藏着什么文件。
 
@@ -23,7 +23,7 @@
 
 ## 如来十三掌
 
-+ 附件是一个 **docx** 文件，内容貌似是佛经之类的，看的我一脸懵逼...
++ 附件是一个 ***.docx*** 文件，内容貌似是佛经之类的，看的我一脸懵逼...
 
   > 夜哆悉諳多苦奢陀奢諦冥神哆盧穆皤三侄三即諸諳即冥迦冥隸數顛耶迦奢若吉怯陀諳怖奢智侄諸若奢數菩奢集遠俱老竟寫明奢若梵等盧皤豆蒙密離怯婆皤礙他哆提哆多缽以南哆心曰姪罰蒙呐神。舍切真怯勝呐得俱沙罰娑是怯遠得呐數罰輸哆遠薩得槃漫夢盧皤亦醯呐娑皤瑟輸諳尼摩罰薩冥大倒參夢侄阿心罰等奢大度地冥殿皤沙蘇輸奢恐豆侄得罰提哆伽諳沙楞缽三死怯摩大蘇者數一遮
 
@@ -81,7 +81,7 @@ print("")
 
 ## give_you_flag
 
-+ 下载附件，是一个 **.gif** 文件。
++ 下载附件，是一个 ***.gif*** 文件。
 + 打开看到就是一只很萌的小龙在数钱，但是看完完整的内容会发现，动图的最后几帧似乎有一个小小的类似二维码的东西一闪而过。
 + 于是使用 **Stegsolve** 打开，然后使用 **Frame Browser** 功能找到有二维码的那一帧并保存下来。
 + 保存下来打开后发现，这个 “二维码” 并不完整，左上角、左下角、右上角一共三个定位点都缺失，而且图片中的二维码比较小，所以直接扫码识别是无法识别出来的，需要用图片处理软件处理一下：
@@ -99,7 +99,7 @@ print("")
 
 ## 坚持60s
 
-+ 下载附件，发现是一个 **.jar** 文件。
++ 下载附件，发现是一个 ***.jar*** 文件。
 + 在安装了 Java 的环境下打开，发现是一个~~有趣~~（智障）的小游戏，键盘的 “上下左右” 键操作一个图片躲避一堆满屏幕乱跑（而且越跑越快）的 “绿帽子” 图片。
 + 经过多次失败的尝试以后发现，把图片移动到屏幕的**右上角**或者**右下角**但是不要移除屏幕可视范围（否则就移不回来了）即可：
 
@@ -137,7 +137,7 @@ print("")
   > 01000110
   > 01111101
 
-+ 利用得到的字符串，写个简简单单的 Python 脚本转换一下即可得到 flag （**solve.py**）。
++ 利用得到的字符串，写个简简单单的 Python 脚本（***solve.py***）转换一下即可得到 flag 。
 
 ```python
 val = ["01100110", 
@@ -184,7 +184,7 @@ print("")
 
 ## 神奇的Modbus
 
-+ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
++ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
 
 + 用 **wireshark** 打开，发现数据包类型很杂。由于题目是 “神奇的Modbus” ，因此特别关注 **Modbus/TCP** 包。
 
@@ -211,7 +211,7 @@ print("")
 
 ## base64÷4
 
-+ 下载附件压缩包并解压，发现一个后缀为 **.txt** 的文件。
++ 下载附件压缩包并解压，发现一个后缀为 ***.txt*** 的文件。
 
 + 打开看到一串字符串：
 
@@ -219,7 +219,7 @@ print("")
 
 + 看起来很像是十六进制数，而且题目的名字就是 “base64÷4”，因此猜测可能俩俩凑个对可以构成一个 ASCII 码对应的字符。
 
-+ 于是写个简简单单的 Python 脚本 **trans.py** ：
++ 于是写个简简单单的 Python 脚本（***trans.py***） ：
 
 ```python
 code = "666C61677B45333342374644384133423834314341393639394544444241323442363041417D"
@@ -243,12 +243,12 @@ print(flag)
 
 ## János-the-Ripper
 
-+ 下载附件压缩包并解压，发现一个无后缀的文件 **misc100** 。
-+ 果断丢进 **WinHex** 里面查看，发现文件头出现 **PK** 字段，说明这是个 **.zip** 压缩包文件。
++ 下载附件压缩包并解压，发现一个无后缀的文件。
++ 果断丢进 **WinHex** 里面查看，发现文件头出现 **PK** 字段，说明这是个 ***.zip*** 压缩包文件。
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/J%C3%A1nos-the-Ripper/1.png?raw=true)
 
-+ 将文件后缀改为 **.zip** ，然后解压缩，解压缩的时候发现需要密码，题目却并没有给任何提示...
++ 将文件后缀改为 ***.zip*** ，然后解压缩，解压缩的时候发现需要密码，题目却并没有给任何提示...
 + 于是使用工具 **ARCHPR** 尝试爆破口令，勾上 “所有大写拉丁文(A - Z)” ， “所有小写拉丁文(a - z)” 和 “所有数字(0 - 9)” 三个勾选框，长度先设为 4 ，开始爆破... 瞬间得到密码 “**fish**” ：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/J%C3%A1nos-the-Ripper/2.png?raw=true)
@@ -260,7 +260,7 @@ print(flag)
 
 ## Test-flag-please-ignore
 
-+ 下载附件压缩包并解压，发现一个无后缀的文件 **misc10** 。
++ 下载附件压缩包并解压，发现一个无后缀的文件。
 
 + 右键用 **Notepad++** 打开，发现文件里就一串字符串：
 
@@ -268,7 +268,7 @@ print(flag)
 
 + 看着像是十六进制数，猜测可能俩俩凑个对可以构成一个 ASCII 码对应的字符。
 
-+ 于是写个简简单单的 Python 脚本 **trans.py** ：
++ 于是写个简简单单的 Python 脚本（***trans.py***） ：
 
 ```python
 code = "666c61677b68656c6c6f5f776f726c647d"
@@ -292,7 +292,7 @@ print(flag)
 
 ## Banmabanma
 
-+ 下载附件压缩包并解压，发现一个 **.png** 文件。
++ 下载附件压缩包并解压，发现一个 ***.png*** 文件。
 
 + 打开图片，发现图片里是一只斑马，但是背上的斑纹挺奇怪的，看起来像个条形码XD
 
@@ -313,7 +313,7 @@ print(flag)
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Hear-with-your-Eyes/1.png?raw=true)
 
-+ 修改后缀为 **.zip** 并解压缩，发现一个 **sound.wav** 文件，打开播放，发现是一段长度为 10 秒的鬼畜音频（不能算音乐吧）...
++ 修改后缀为 ***.zip*** 并解压缩，发现一个 ***sound.wav*** 文件，打开播放，发现是一段长度为 10 秒的鬼畜音频（不能算音乐吧）...
 + 题目提示 “用眼睛听这段音频” ，猜想需要搞个音频处理软件啥的来看看这段音频有没有藏着什么东西，于是用 **Audacity** 打开音乐文件。
 + 默认显示的是这段音频的**波形**，波形没有什么特别的，于是切换到**频谱图**，然后就看到了用频谱硬生生 “画” 出来的 flag 字符串...
 
@@ -331,7 +331,7 @@ print(flag)
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/What-is-this/1.png?raw=true)
 
-+ 于是将文件的后缀改为 **.zip** ，解压缩得到两张图片 **pic1.jpg** 和 **pic2.jpg** 。两张图片看起来十分像，都是杂乱的分布着黑白像素点。猜测可能 **combine** 一下也许会变出个二维码什么的，于是使用工具 **Stegsolve** 中的 **Image Combiner** 功能把两张图合成一下。
++ 于是将文件的后缀改为 ***.zip*** ，解压缩得到两张图片 ***pic1.jpg*** 和 ***pic2.jpg*** 。两张图片看起来十分像，都是杂乱的分布着黑白像素点。猜测可能 **combine** 一下也许会变出个二维码什么的，于是使用工具 **Stegsolve** 中的 **Image Combiner** 功能把两张图合成一下。
 + 合成的图片中并没有二维码，却是一个字符串 “**AZADI TOWER**” ，即为 flag 。
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/What-is-this/2.png?raw=true)
@@ -342,7 +342,7 @@ print(flag)
 
 ## embarrass
 
-+ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
++ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
 + 果断上 **wireshark** ，查看内容，发现拦截到的数据包种类非常多，大部分是 **TCP 包**，还有少量的 **HTTP 包**、**FTP-DATA 包**等等。内容太多不知道从哪来开始找 flag ，于是考虑在 Kali Linux 系统下 `binwalk` 或者利用 `foremost` 找，找到各种 xml 文档，htm/html 页面以及少量的 doc 文件甚至一个 jpg 文件（打开发现还是张有问题的图片），但是没有什么有用的内容。
 + 无奈之下回归 wireshark ，开始追踪流。首先**对 HTTP 包追踪 HTTP 流**，然后在弹出的窗口底部查找 “flag” 字符串，但一无所获。
 + 注意到 **FTP-DATA 包**，于是尝试**追踪 TCP 流**，并在弹出的窗口底部查找 “flag” 字符串，成功搜索到 flag ：
@@ -363,15 +363,15 @@ print(flag)
 ## MISCall
 
 + 下载附件，发现又是一个没有后缀的文件...
-+ 用 **WinHex** 打开，发现文件开头出现字段 `BZh91AY&SY` ，百度得知这是 **.bz2** 文件的文件头，于是打开 **Kali Linux** 在终端用 `tar -jxvf` 命令解压文件。
++ 用 **WinHex** 打开，发现文件开头出现字段 `BZh91AY&SY` ，百度得知这是 ***.bz2*** 文件的文件头，于是打开 **Kali Linux** 在终端用 `tar -jxvf` 命令解压文件。
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/1.png?raw=true)
 
-+ 仔细查看解压的详细过程，发现解压得到的文件像是某个项目或者 repo 的 **git 目录** 。其中有个 **flag.txt** 文件没有被隐藏，打开后却只看到一行字：
++ 仔细查看解压的详细过程，发现解压得到的文件像是某个项目或者 repo 的 **git 目录** 。其中有个 ***flag.txt*** 文件没有被隐藏，打开后却只看到一行字：
 
   > Nothing to see here, moving along...
 
-+ 查看其它被隐藏的 **.git 文件夹**中的文件，没看出什么东西，于是百度 git 命令，在终端对该文件夹进行操作。
++ 查看其它被隐藏的 ***.git*** **文件夹**中的文件，没看出什么东西，于是百度 git 命令，在终端对该文件夹进行操作。
 
 + 首先是用 `git log`  和 `git log all` 命令查看版本演变历史和所有分支的历史：
 
@@ -385,11 +385,11 @@ print(flag)
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/4.png?raw=true)
 
-+ 发现列表里是有东西的，于是进一步使用 `git stash show` 命令查看堆栈中最新保存的stash和当前目录的差异，发现 stash 中有个 **s.py** 文件，还有个 **flag.txt** 文件：
++ 发现列表里是有东西的，于是进一步使用 `git stash show` 命令查看堆栈中最新保存的stash和当前目录的差异，发现 stash 中有个 ***s.py*** 文件，还有个 ***flag.txt*** 文件：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/5.png?raw=true)
 
-+ 于是用 `git stash apply` 命令将堆栈中的内容应用到当前目录，即可在目录中看到 **s.py** 文件和**新的 flag.txt** 文件：
++ 于是用 `git stash apply` 命令将堆栈中的内容应用到当前目录，即可在目录中看到 ***s.py*** 文件和**新的** ***flag.txt*** 文件：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/MISCall/6.png?raw=true)
 
@@ -420,7 +420,7 @@ print(flag)
   > never will support anything other than AT-harddisks, as that’s all I
   > have :-(.
 
-+ 而 s.py 文件看起来则像是处理 flag.txt 文件的：
++ 而 ***s.py*** 文件看起来则像是处理 ***flag.txt*** 文件的：
 
 ```python
 #!/usr/bin/env python
@@ -436,7 +436,7 @@ with open("flag.txt", "rb") as fd:
 
 ## wireshark-1
 
-+ 下载附件压缩包并解压，发现一个 **.pcap** 文件。
++ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
 + 果断上 **wireshark** ，查看拦截到的数据包。
 + 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
 
@@ -455,9 +455,77 @@ with open("flag.txt", "rb") as fd:
 
 
 
+## Reverse-it
+
++ 下载附件，发现是一个无后缀的文件。
+
++ 打开 **Kali Linux** ，使用 `binwalk` 处理一下，但是并没有发现文件隐藏着什么东西。
+
++ 于是使用 **WinHex** 打开，但仔细查看整个文件也没发现有什么有价值的数据。
+
++ 这是想到题目是 “Reverse-it” ，考虑可能要把文件内容反向一下。于是写了个 Python 脚本直接读取文件的字节流后，以字节为单位把整个文件的数据反向后写入新的文件。但是发现这样输出的文件文件头为：
+
+  > FF8DFF0E......
+
++ 百度一下并没有发现哪种常见的文件格式文件头是这样的，但是发现 **JPEG (jpg)** 格式的文件文件头是：
+
+  > FFD8FF
+
++ **常见文件文件头：**
+
+  > + JPEG (jpg)，文件头：FFD8FF
+  > + PNG (png)，文件头：89504E47
+  > + GIF (gif)，文件头：47494638
+  > + TIFF (tif)，文件头：49492A00
+  > + Windows Bitmap (bmp)，文件头：424D
+  > + XML (xml)，文件头：3C3F786D6C
+  > + HTML (html)，文件头：68746D6C3E
+  > + MS Word/Excel (xls.or.doc)，文件头：D0CF11E0
+  > + MS Access (mdb)，文件头：5374616E64617264204A
+  > + Adobe Acrobat (pdf)，文件头：255044462D312E
+  > + ZIP Archive (zip)，文件头：504B0304
+  > + RAR Archive (rar)，文件头：52617221
+  > + Wave (wav)，文件头：57415645
+  > + AVI (avi)，文件头：41564920
+  > + Real Audio (ram)，文件头：2E7261FD
+  > + Real Media (rm)，文件头：2E524D46
+  > + MPEG (mpg)，文件头：000001BA
+  > + MPEG (mpg)，文件头：000001B3
+  > + Quicktime (mov)，文件头：6D6F6F76
+  > + Windows Media (asf)，文件头：3026B2758E66CF11
+  > + MIDI (mid)，文件头：4D546864
+  >
+  > 参考链接：[**常见文件文件头 - eWFuZw==的博客 - CSDN博客**](http://www.baidu.com/link?url=SUE6EFxeJZvkqFifI9mu_G2OqKDetxXjPTb96LX3KZb3ThIBa0VcIg4Rl06fnIPHog8jRn89A5tQ3k2NmEHWg4kT9GG-g9fW0AqJuwZgdQC&wd=&eqid=f3b096d70012a586000000065f09c518)
+
++ 于是修改 Python 脚本，以字为单位把整个文件的数据反向后写入新的文件（***reverse.py***）：
+
+```python
+with open("0da9641b7aad4efb8f7eb45f47eaebb2", "rb") as infile:
+    data = infile.read()
+    
+rev_data = bytes.fromhex(data.hex()[::-1])
+
+print(rev_data)
+
+with open("reversed.jpg", "wb") as outfile:
+    outfile.write(rev_data)
+```
+
++ 输出的文件打开后发现是一张被水平镜面翻转的字符串图片。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Reverse-it/reversed.jpg?raw=true)
+
++ 于是用图片处理软件处理一下，即可得到包含 flag 的图片。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Reverse-it/flag.jpg?raw=true)
+
++ flag: **SECCON{6in_tex7}**
+
+
+
 ## pure_color
 
-+ 下载附件发现是一个 **.bmp** 图片文件。
++ 下载附件发现是一个 ***.bmp*** 图片文件。
 + 打开图片，发现是一张空白的图片... 感觉不能这么简单，于是丢进 **StegSolve** 里面查看。
 + 翻了好几个图层以后，在 **Blue plane 0** 层看到隐藏的 flag 。
 
@@ -467,9 +535,41 @@ with open("flag.txt", "rb") as fd:
 
 
 
+## Aesop_secret
+
++ 下载附件，解压缩得到一个 ***.gif*** 文件。
++ 打开图片，发现这个动态图的每一帧似乎就是某张图片的某一部分。
++ 于是使用 **Stegsolve** 的 **Frame Browser** 分解每一帧后再用 **Image Combiner** 拼起来得到完整的图片，也可以直接使用 **在线[GIF动态图片分解](https://tu.sioe.cn/gj/fenjie/)** 直接得到网站帮你分解后并且拼起来的图片XD：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Aesop_secret/1.png?raw=true)
+
++ 拼成的图片中有四个字符 **ISCC** ：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Aesop_secret/combined.png?raw=true)
+
++ 然而这个是出题方的名称缩写，肯定不是 flag 。于是查看压缩包和解压得到的 gif 图片里面还有没有什么隐藏的东西。
+
++ 打开 **Kali Linux** 使用 `binwalk` 处理并没有发现什么东西，于是用 **WinHex** 打开 gif 文件查看文件数据，终于在文件末尾发现一段很像 Base 64 编码的字符串：
+
+  > U2FsdGVkX19QwGkcgD0fTjZxgijRzQOGbCWALh4sRDec2w6xsY/ux53Vuj/AMZBDJ87qyZL5kAf1fmAH4Oe13Iu435bfRBuZgHpnRjTBn5+xsDHONiR3t0+Oa8yG/tOKJMNUauedvMyN4v4QKiFunw==
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Aesop_secret/2.png?raw=true)
+
++ 但是用 Base 64 解码并不能得到有用的信息（乱码）。这时想到题目名字是 “Aesop” ，猛然想起 **AES 加密解密算法**，不学密码学多年几乎忘了还有这个东西（骗人，明明准备复试的时候还把密码学包括 AES 加解密从头到尾非常详细的复习过一遍QAQ[捂脸]）...
+
++ 于是使用 **[在线 AES 加密 | AES 解密 - 在线工具](https://www.sojson.com/encrypt_aes.html)** 解密一下，密码正好就用之前合成的图片里面的四个字符 **ISCC** 试试，第一次解密得到一个仍然不是 flag 但是很像 Base 64 编码的字符串：
+
+  > U2FsdGVkX18OvTUlZubDnmvk2lSAkb8Jt4Zv6UWpE7Xb43f8uzeFRUKGMo6QaaNFHZriDDV0EQ/qt38Tw73tbQ==
+
++ 使用 Base 64 解码并不能得到 flag ，于是无奈之下抱着试试的心态再次使用 AES 解密，密码还是 ISCC。然后就得到了 flag ...
+
++ flag: **flag{DugUpADiamondADeepDarkMine}**
+
+
+
 ### 2017_Dating_in_Singapore
 
-+ 下载附件，发现一个 **.pdf** 文件，文件内容是张 2017 年的新加坡日历（？？？）
++ 下载附件，发现一个 ***.pdf*** 文件，文件内容是张 2017 年的新加坡日历（？？？）
 
 + 题目描述给了一串数字，这串数字分好几段，每段之间用 '-' 隔开：
 
@@ -485,9 +585,29 @@ with open("flag.txt", "rb") as fd:
 
 
 
+## simple_transfer
+
++ 下载附件，发现一个 ***.pcap*** 文件。
+
++ 果断用 **Wireshark** 打开，发现拦截到的数据包大部分是 **TCP 包**，还有一些 **NFS 包** 等各种不同的协议数据包，使用 追踪流 -> TCP 流 试图查看双方交换的数据，但没有什么有用的发现。
+
++ 这时把重点转向 **NFS 数据包**，发现其中有使用 “Remote Procedure Call (RPC)” ，于是尝试从中分离出双方共享的文件。
+
+  > + NFS协议是一种用于文件共享的协议，它可以使得主机之间进行文件的共享。客户端可以像在本机上的文件一样操作远程主机的文件。NFS 协议最初仅支持 UDP 协议，目前最新版本的 NFS 可以支持 UDP 和 TCP 协议，不过 UDP 协议的速度会更快。
+  > + NFS 协议是一个十分简单的协议，它本身没有提供信息传输的协议和功能。之所以 NFS 能够让主机之间通过网络进行资料共享，这是因为 NFS 使用了一些其它的传输协议，主要用到了 RPC (Remote Procedure Call) 功能。所以在启动 NFS 服务器的时候需要启动 RPC 服务。
+
++ 于是打开 **Kali Linux** ，使用 `binwalk` 命令，发现其中有一个 **PDF 文件**。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/simple_transfer/1.png?raw=true)
+
++ 使用 `foremost` 命令将其分离出来，打开这个 PDF 文件，文件中的字符串即为 flag 。
++ flag: **HITB{b3d0e380e9c39352c667307d010775ca}**
+
+
+
 ## hit-the-core
 
-+ 下载附件，发现一个文件后缀为 **.core** 的文件。
++ 下载附件，发现一个文件后缀为 ***.core*** 的文件。
 
 + 完全不知道用什么软件能打开，先用 **Notepad++** 或者 **WinHex** 打开瞧瞧，发现文件最前面几个可打印字符写着 **ELF** ，于是打开 **Kali Linux** 系统，使用 `strings` 命令查看可打印字符，发现其中有一串很长很长的字符串，带有 '{' 和 '}' ，很有可能是 flag ：
 
@@ -496,7 +616,7 @@ with open("flag.txt", "rb") as fd:
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/hit-the-core/1.png?raw=true)
 
 + 但是完全没有规律，考虑到可能被打乱或者被加密，于是用 **[栅栏密码在线加密解密](https://www.qqxiuzi.cn/bianma/zhalanmima.php) 网站**尝试每组字数为不同值时候的结果，一直从 2 试到 26 都没有找到正确的 flag 。
-+ 于是试图找规律。由于题目来源为 **alexctf** ，猜测 '{' 和 '}' 前很可能是 alexctf ，即 flag 的形式很可能是 **alexctf{xxx...xxx}** ，于是开始查找，发现从第 4 个字符开始，每隔 5 个字符正好能够成 flag 的形式，于是写了个简简单单的 Python 脚本 **solve.py** ：
++ 于是试图找规律。由于题目来源为 **alexctf** ，猜测 '{' 和 '}' 前很可能是 alexctf ，即 flag 的形式很可能是 **alexctf{xxx...xxx}** ，于是开始查找，发现从第 4 个字符开始，每隔 5 个字符正好能够成 flag 的形式，于是写了个简简单单的 Python 脚本 ***solve.py*** ：
 
 ```python
 msg = "cvqAeqacLtqazEigwiXobxrCrtuiTzahfFreqc{bnjrKwgk83kgd43j85ePgb_e_rwqr7fvbmHjklo3tews_hmkogooyf0vbnk0ii87Drfgh_n kiwutfb0ghk9ro987k5tfb_hjiouo087ptfcv}"
@@ -516,7 +636,7 @@ print(flag)
 
 ## glance-50
 
-+ 下载附件发现是一个 **.gif** 图片文件。
++ 下载附件发现是一个 ***.gif*** 图片文件。
 + 打开图片，发现这个图片的尺寸很奇怪，呈细长条形的，宽度非常非常小，看不清楚图片的内容，仔细看也只能看到动图随着时间帧的变化图片中有什么东西在滚动播放或者平移（或者别的方式移动）...
 + 于是考虑将其按照时间帧分解，这里可以使用 **Stegsolve** 的 **Frame Browser** 分解后保存每一帧，也可以使用别的专业图片处理软件保存每一帧，甚至也可以使用 **在线[GIF动态图片分解](https://tu.sioe.cn/gj/fenjie/)**。
 + 没想到这个网站直接将分解后的图片按照时间帧顺序平铺在页面上展示出来，于是直接看到图片的内容，其中有一段字符串，即为 flag 。
@@ -530,7 +650,7 @@ print(flag)
 
 ## Training-Stegano-1
 
-+ 下载附件发现是一个 **.bmp** 图片文件。
++ 下载附件发现是一个 ***.bmp*** 图片文件。
 + 打开图片，发现这个图片非常非常奇怪，尺寸非常小，放大好几倍看发图片现没什么有价值的内容，图片只是些色块。
 + 在线1)是折腾了半天，什么都没有找到。
 + 于是丢进 **WinHex** 里面看看图片里有没有藏着什么东西，于是在文件末尾发现一段字符串 “**passwd:steganoI**” ，就成功的得到了 flag ...
@@ -551,12 +671,12 @@ print(flag)
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/002.jpg?raw=true)
 
-+ 看到 **PK** 字段以及目录下的一个 **txt** 文件和两个 **png** 文件，就知道这个图片其实隐藏着一个压缩包。
-+ 将后缀改为 **.zip** ，解压以后得到三个文件：
++ 看到 **PK** 字段以及目录下的一个 ***txt*** 文件和两个 ***png*** 文件，就知道这个图片其实隐藏着一个压缩包。
++ 将后缀改为 ***.zip*** ，解压以后得到三个文件：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/003.jpg?raw=true)
 
-+ 解压，发现两个 **png** 文件是两个 ~~几乎一模一样~~ 的表情包；于是打开 **hint.txt** 看到提示：
++ 解压，发现两个 ***png*** 文件是两个 ~~几乎一模一样~~ 的表情包；于是打开 ***hint.txt*** 看到提示：
 
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/a_good_idea/004.jpg?raw=true)
 
@@ -610,7 +730,7 @@ img.save("result.png")
 
 ## easycap
 
-+ 下载文件，发现是一个 **.pcap** 文件。
++ 下载文件，发现是一个 ***.pcap*** 文件。
 + 果断用 **wireshark** 打开，查看数据包，发现全是 **TCP** 数据包...
 + 于是直接右键 -> **追踪流** -> **TCP流**，然后在弹出的窗口中直接就能看到 flag ...
 
@@ -622,7 +742,7 @@ img.save("result.png")
 
 ## 隐藏的信息
 
-+ 下载压缩包解压以后看到一个文本文件 **message.txt** ，打开以后发现一串数字，有的数字之间有空格：
++ 下载压缩包解压以后看到一个文本文件 ***message.txt*** ，打开以后发现一串数字，有的数字之间有空格：
 
 > 0126 062 0126 0163 0142 0103 0102 0153 0142 062 065 0154 0111 0121 0157 0113 0111 0105 0132 0163 0131 0127 0143 066 0111 0105 0154 0124 0121 060 0116 067 0124 0152 0102 0146 0115 0107 065 0154 0130 062 0116 0150 0142 0154 071 0172 0144 0104 0102 0167 0130 063 0153 0167 0144 0130 060 0113 
 
@@ -661,7 +781,7 @@ for s in string:
 
 ## 肥宅快乐题
 
-+ 下载附件，发现是一个 **.swf** 文件。
++ 下载附件，发现是一个 ***.swf*** 文件。
 + 打开发现是一个貌似年代久远的古老的 **flash 小游戏**... 题目提示 “真正的快乐的游戏题，打通就给flag哦，与肥宅快乐水搭配更佳。 Flash游戏，通关后，注意与NPC的对话哦;)”。于是开始打，奈何我太菜，第一关都过不去...
 + 于是开始动歪脑筋，发现 swf 文件在视频播放器下方也有进度条，于是开始 “跳关”，试图找到最后通关后与NPC的对话。
 + 终于在**第 57 帧**发现了所谓的通关后与NPC的对话，在对话中发现一串奇怪的字符串...
@@ -675,7 +795,7 @@ for s in string:
 
 ## 小小的PDF
 
-+ 下载附件，发现是一个 **.pdf** 文件。
++ 下载附件，发现是一个 ***.pdf*** 文件。
 + 打开文件，一共两页，内容没什么营养：第一页上放了两张表情包；第二页空白，看起来十分可疑。
 + 于是打开 **Kali Linux** 系统，用 `binwalk` 命令查看一下，发现这个 pdf 文件包含了三个 JPEG 文件和三个 Zlib 压缩数据文件。而 pdf 中却只能看到两张 JPEG文件，显然有一张图片被隐藏了。
 
@@ -691,7 +811,7 @@ for s in string:
 
 ## Excaliflag
 
-+ 下载附件，发现是一个 **.png** 文件。
++ 下载附件，发现是一个 ***.png*** 文件。
 + 打开文件发现这是张很普通的图片，除了图片是一个旗子（flag）插在一片绿油油的草地上（逗我么...）
 + 先用图片隐写工具 **Stegsolve** 分离各个图层的图片试试，翻了几个图层就发现某些图层能隐隐约约看到图片里隐藏了一串字符串。
 + 最后在 **Gray bits** 层发现非常清晰的隐藏字符串，即为 flag 。
