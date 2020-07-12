@@ -728,6 +728,298 @@ img.save("result.png")
 
 
 
+## 4-1
+
++ 下载附件，解压缩得到一个 ***.png*** 文件。
++ 第一反应打开 **Kali Linux** 使用 `binwalk` 查看一下。发现里面有一个压缩包，压缩包里有一个 ***tips.txt*** 和另一个压缩包 ***day2's secret.zip*** 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/4-1/1.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/4-1/2.png?raw=true)
+
++ 于是用 `foremost` 命令将压缩包分离出来，其中 `tips.txt` 文件的内容如下：
+
+  > Although two days doing the same things, but day2 has a secret than day1
+  > -。-
+
++ 而 ***day2's secret.zip*** 压缩包内有两张看起来一模一样的图片 ***day1.png*** 和 ***day2.png*** ，但是两张图片大小差不少，***day2.png*** 为 408K ，比 ***day1.png*** 的 243K 大不少。因此猜测 ***day2.png*** 是在 ***day1.png*** 上加了盲水印，百度 “盲水印” 即可找到大佬的盲水印处理脚本 ***bwmforpy3.py*** （Python3版本的）：
+
+```python
+#!/usr/bin/env python
+# -*- coding: utf8 -*-
+
+import sys
+import random
+
+cmd = None
+debug = False
+seed = 20160930
+oldseed = False
+alpha = 3.0
+
+if __name__ == '__main__':
+    if '-h' in sys.argv or '--help' in sys.argv or len(sys.argv) < 2:
+        print ('Usage: python bwm.py <cmd> [arg...] [opts...]')
+        print ('  cmds:')
+        print ('    encode <image> <watermark> <image(encoded)>')
+        print ('           image + watermark -> image(encoded)')
+        print ('    decode <image> <image(encoded)> <watermark>')
+        print ('           image + image(encoded) -> watermark')
+        print ('  opts:')
+        print ('    --debug,          Show debug')
+        print ('    --seed <int>,     Manual setting random seed (default is 20160930)')
+        print ('    --oldseed         Use python2 random algorithm.')
+        print ('    --alpha <float>,  Manual setting alpha (default is 3.0)')
+        sys.exit(1)
+    cmd = sys.argv[1]
+    if cmd != 'encode' and cmd != 'decode':
+        print ('Wrong cmd %s' % cmd)
+        sys.exit(1)
+    if '--debug' in sys.argv:
+        debug = True
+        del sys.argv[sys.argv.index('--debug')]
+    if '--seed' in sys.argv:
+        p = sys.argv.index('--seed')
+        if len(sys.argv) <= p+1:
+            print ('Missing <int> for --seed')
+            sys.exit(1)
+        seed = int(sys.argv[p+1])
+        del sys.argv[p+1]
+        del sys.argv[p]
+    if '--oldseed' in sys.argv:
+        oldseed = True
+        del sys.argv[sys.argv.index('--oldseed')]
+    if '--alpha' in sys.argv:
+        p = sys.argv.index('--alpha')
+        if len(sys.argv) <= p+1:
+            print ('Missing <float> for --alpha')
+            sys.exit(1)
+        alpha = float(sys.argv[p+1])
+        del sys.argv[p+1]
+        del sys.argv[p]
+    if len(sys.argv) < 5:
+        print ('Missing arg...')
+        sys.exit(1)
+    fn1 = sys.argv[2]
+    fn2 = sys.argv[3]
+    fn3 = sys.argv[4]
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# OpenCV是以(BGR)的顺序存储图像数据的
+# 而Matplotlib是以(RGB)的顺序显示图像的
+def bgr_to_rgb(img):
+    b, g, r = cv2.split(img)
+    return cv2.merge([r, g, b])
+
+if cmd == 'encode':
+    print ('image<%s> + watermark<%s> -> image(encoded)<%s>' % (fn1, fn2, fn3))
+    img = cv2.imread(fn1)
+    wm = cv2.imread(fn2)
+
+    if debug:
+        plt.subplot(231), plt.imshow(bgr_to_rgb(img)), plt.title('image')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(234), plt.imshow(bgr_to_rgb(wm)), plt.title('watermark')
+        plt.xticks([]), plt.yticks([])
+
+    # print img.shape # 高, 宽, 通道
+    h, w = img.shape[0], img.shape[1]
+    hwm = np.zeros((int(h * 0.5), w, img.shape[2]))
+    assert hwm.shape[0] > wm.shape[0]
+    assert hwm.shape[1] > wm.shape[1]
+    hwm2 = np.copy(hwm)
+    for i in range(wm.shape[0]):
+        for j in range(wm.shape[1]):
+            hwm2[i][j] = wm[i][j]
+
+    if oldseed: random.seed(seed,version=1)
+    else: random.seed(seed)
+    m, n = list(range(hwm.shape[0])), list(range(hwm.shape[1]))
+    if oldseed:
+        random.shuffle(m,random=random.random)
+        random.shuffle(n,random=random.random)
+    else:
+        random.shuffle(m)
+        random.shuffle(n)
+
+    for i in range(hwm.shape[0]):
+        for j in range(hwm.shape[1]):
+            hwm[i][j] = hwm2[m[i]][n[j]]
+
+    rwm = np.zeros(img.shape)
+    for i in range(hwm.shape[0]):
+        for j in range(hwm.shape[1]):
+            rwm[i][j] = hwm[i][j]
+            rwm[rwm.shape[0] - i - 1][rwm.shape[1] - j - 1] = hwm[i][j]
+
+    if debug:
+        plt.subplot(235), plt.imshow(bgr_to_rgb(rwm)), \
+            plt.title('encrypted(watermark)')
+        plt.xticks([]), plt.yticks([])
+
+    f1 = np.fft.fft2(img)
+    f2 = f1 + alpha * rwm
+    _img = np.fft.ifft2(f2)
+
+    if debug:
+        plt.subplot(232), plt.imshow(bgr_to_rgb(np.real(f1))), \
+            plt.title('fft(image)')
+        plt.xticks([]), plt.yticks([])
+
+    img_wm = np.real(_img)
+
+    assert cv2.imwrite(fn3, img_wm, [int(cv2.IMWRITE_JPEG_QUALITY), 100])
+
+    # 这里计算下保存前后的(溢出)误差
+    img_wm2 = cv2.imread(fn3)
+    sum = 0
+    for i in range(img_wm.shape[0]):
+        for j in range(img_wm.shape[1]):
+            for k in range(img_wm.shape[2]):
+                sum += np.power(img_wm[i][j][k] - img_wm2[i][j][k], 2)
+    miss = np.sqrt(sum) / (img_wm.shape[0] * img_wm.shape[1] * img_wm.shape[2]) * 100
+    print ('Miss %s%% in save' % miss)
+
+    if debug:
+        plt.subplot(233), plt.imshow(bgr_to_rgb(np.uint8(img_wm))), \
+            plt.title('image(encoded)')
+        plt.xticks([]), plt.yticks([])
+
+    f2 = np.fft.fft2(img_wm)
+    rwm = (f2 - f1) / alpha
+    rwm = np.real(rwm)
+
+    wm = np.zeros(rwm.shape)
+    for i in range(int(rwm.shape[0] * 0.5)):
+        for j in range(rwm.shape[1]):
+            wm[m[i]][n[j]] = np.uint8(rwm[i][j])
+    for i in range(int(rwm.shape[0] * 0.5)):
+        for j in range(rwm.shape[1]):
+            wm[rwm.shape[0] - i - 1][rwm.shape[1] - j - 1] = wm[i][j]
+
+    if debug:
+        assert cv2.imwrite('_bwm.debug.wm.jpg', wm)
+        plt.subplot(236), plt.imshow(bgr_to_rgb(wm)), plt.title(u'watermark')
+        plt.xticks([]), plt.yticks([])
+
+    if debug:
+        plt.show()
+
+elif cmd == 'decode':
+    print ('image<%s> + image(encoded)<%s> -> watermark<%s>' % (fn1, fn2, fn3))
+    img = cv2.imread(fn1)
+    img_wm = cv2.imread(fn2)
+
+    if debug:
+        plt.subplot(231), plt.imshow(bgr_to_rgb(img)), plt.title('image')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(234), plt.imshow(bgr_to_rgb(img_wm)), plt.title('image(encoded)')
+        plt.xticks([]), plt.yticks([])
+
+    if oldseed: random.seed(seed,version=1)
+    else: random.seed(seed)
+    m, n = list(range(int(img.shape[0] * 0.5))), list(range(img.shape[1]))
+    if oldseed:
+        random.shuffle(m,random=random.random)
+        random.shuffle(n,random=random.random)
+    else:
+        random.shuffle(m)
+        random.shuffle(n)
+
+    f1 = np.fft.fft2(img)
+    f2 = np.fft.fft2(img_wm)
+
+    if debug:
+        plt.subplot(232), plt.imshow(bgr_to_rgb(np.real(f1))), \
+            plt.title('fft(image)')
+        plt.xticks([]), plt.yticks([])
+        plt.subplot(235), plt.imshow(bgr_to_rgb(np.real(f1))), \
+            plt.title('fft(image(encoded))')
+        plt.xticks([]), plt.yticks([])
+
+    rwm = (f2 - f1) / alpha
+    rwm = np.real(rwm)
+
+    if debug:
+        plt.subplot(233), plt.imshow(bgr_to_rgb(rwm)), \
+            plt.title('encrypted(watermark)')
+        plt.xticks([]), plt.yticks([])
+
+    wm = np.zeros(rwm.shape)
+    for i in range(int(rwm.shape[0] * 0.5)):
+        for j in range(rwm.shape[1]):
+            wm[m[i]][n[j]] = np.uint8(rwm[i][j])
+    for i in range(int(rwm.shape[0] * 0.5)):
+        for j in range(rwm.shape[1]):
+            wm[rwm.shape[0] - i - 1][rwm.shape[1] - j - 1] = wm[i][j]
+    assert cv2.imwrite(fn3, wm)
+
+    if debug:
+        plt.subplot(236), plt.imshow(bgr_to_rgb(wm)), plt.title(u'watermark')
+        plt.xticks([]), plt.yticks([])
+
+    if debug:
+        plt.show()
+
+```
+
+（代码来源链接：**[大佬的盲水印脚本 - Github](https://github.com/chishaxie/BlindWaterMark)** ）
+
++ 注意，该代码使用了 **cv2** 模块，需要安装第三方库 **opencv_python** ，可以使用 **[opencv_python 的清华源](https://pypi.tuna.tsinghua.edu.cn/simple/opencv-python/)** 下载后本地安装。
++ 将该脚本和两张图片放在同一个文件夹中，使用脚本中说明的命令 `python bwmforpy3.py decode --oldseed day1.png day2.png flag.png` 解码得到水印图片 ***flag.png*** ，图片中内容即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/4-1/flag.png?raw=true)
+
++ **注意这里有个坑：如果使用 Python3 版本的脚本，则必须加上 `--oldseed` 参数（使用 Python2 中的随机种子方法），否则无法得到包含 flag 内容的水印图片...**
++ ~~我好菜啊，我什么时候才能自己写个这样的脚本呢QAQ~~
++ flag: **wdflag{My_c4t_Ho}**
+
+
+
+## 适合作为桌面
+
++ 下载附件，解压缩得到一个 ***.png*** 文件。
++ 第一反应，用 **Stegsolve** 分离图层查看其中是否有隐藏信息，很快在 **Red Plane 1** 中看到一个二维码：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E9%80%82%E5%90%88%E4%BD%9C%E4%B8%BA%E6%A1%8C%E9%9D%A2/2.png?raw=true)
+
++ 保存下来后把二维码部分单独保存下来：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E9%80%82%E5%90%88%E4%BD%9C%E4%B8%BA%E6%A1%8C%E9%9D%A2/3.png?raw=true)
+
++ 丢到 **[在线二维码识别网站](https://cli.im/deqr/)** 上识别，得到一大段疑似十六进制数的字符串：
+
+  > 03F30D0A79CB05586300000000000000000100000040000000730D0000006400008400005A000064010053280200000063000000000300000016000000430000007378000000640100640200640300640400640500640600640700640300640800640900640A00640600640B00640A00640700640800640C00640C00640D00640E00640900640F006716007D00006410007D0100781E007C0000445D16007D02007C01007400007C0200830100377D0100715500577C010047486400005328110000004E6966000000696C00000069610000006967000000697B000000693300000069380000006935000000693700000069300000006932000000693400000069310000006965000000697D000000740000000028010000007403000000636872280300000074030000007374727404000000666C6167740100000069280000000028000000007304000000312E7079520300000001000000730A0000000001480106010D0114014E280100000052030000002800000000280000000028000000007304000000312E707974080000003C6D6F64756C653E010000007300000000
+
++ 于是打开 **WinHex** ，把剪贴板内容保存到新文件，保存方式为 **ASCII (Hex)** ，发现文件中有 ***1.py*** 和 ***1.pyc*** 的内容，猜想可能跟 Python 文件有关，百度以后发现头部字段对应的是 ***.pyc*** 文件。于是保存为 ***.pyc*** 文件。
+
+  > pyc 文件的头部是 03 F3 0D 0A ，表示 Python 的版本。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E9%80%82%E5%90%88%E4%BD%9C%E4%B8%BA%E6%A1%8C%E9%9D%A2/4.png?raw=true)
+
++ 然后在 **Anaconda Prompt** 中使用命令 `pip install uncompyle` 安装 **uncompyle** 后反编译 pyc 文件，然后稍微修改一下反编译得到的 ***tmp.py*** 文件，运行即可得到 flag ：
+
+```python
+def flag():
+    str = [
+     102, 108, 97, 103, 123, 51, 56, 97, 53, 55, 48, 51, 50, 48, 56, 53, 52, 52, 49, 101, 55, 125]
+    flag = ''
+    for i in str:
+        flag += chr(i)
+
+    print(flag)
+# okay decompiling tmp.pyc
+
+flag()
+```
+
++ flag: **flag{38a57032085441e7}**
+
+
+
 ## easycap
 
 + 下载文件，发现是一个 ***.pcap*** 文件。
