@@ -523,6 +523,40 @@ with open("reversed.jpg", "wb") as outfile:
 
 
 
+## something_in_image
+
++ 下载附件，发现是一个无后缀的文件。
++ 首先在 **WinHex** 中打开，稍微查看一下发现文件中有一些内容是可打印字符，于是尝试直接搜索字符串 “flag” ，没有搜到有用的结果。但是仔细查看后发现，文件中有类似出现 “Flag.txt” 的字段，于是打开 **Kali Linux** ，使用命令 `binwalk` 查看一下，但是没有得到任何结果：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/something_in_image/1.png?raw=true)
+
++ 于是直接用 Linux 的命令 `strings | grep Flag` 查找 “Flag” 字段，然后就得到了 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/something_in_image/2.png?raw=true)
+
++ 直接在 **WinHex** 里面直接查找字符串 “Flag” 也是可以的...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/something_in_image/3.png?raw=true)
+
++ flag: **Flag{yc4pl0fvjs2k1t7T}**
+
+
+
+## 打野
+
++ 下载附件，解压得到一个 ***.bmp*** 文件。
++ 打开图片... rua！一张大大的 cxk 美照 “闪现” 眼前（题目真的取得好啊...）
++ 打开 **Stegsolve** ，查看各个 Plane （从各种角度）审视 cxk 的美照，然而并未发现照片中存在任何隐藏内容。
++ 猜想可能需要 **Extract Data** 来从图片中提取数据，然而懒得用 **Stegsolve** 调参（确实也不知道从哪里调起...），于是悄咪咪的打开 **Kali Linux** ，直接在终端输入命令 `zsteg 瞅啥.bmp` 然后就得到了 flag...
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E6%89%93%E9%87%8E/1.png?raw=true)
+
++ PS. 后来尝试在 Stegsolve 中按照 `zsteg` 得到的参数去调，但是貌似两个工具处理数据的差距挺大，一直没法调出来...
++ **鸡你太美 ~**
++ flag: **qwxf{you_say_chick_beautiful?}**
+
+
+
 ## pure_color
 
 + 下载附件发现是一个 ***.bmp*** 图片文件。
@@ -567,7 +601,7 @@ with open("reversed.jpg", "wb") as outfile:
 
 
 
-### 2017_Dating_in_Singapore
+## 2017_Dating_in_Singapore
 
 + 下载附件，发现一个 ***.pdf*** 文件，文件内容是张 2017 年的新加坡日历（？？？）
 
