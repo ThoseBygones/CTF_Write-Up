@@ -162,3 +162,19 @@ print(flag)
 ```
 
 + flag: **cyberpeace{WELLDONE}**
+
+
+
+## Railfence
+
++ 下载附件，得到一个 ***.txt*** 文件。
+
++ 打开看到一串只包含英文小写字母、下划线和花括号的字符串，初具 flag 的形式：
+
+  > ccehgyaefnpeoobe{lcirg}epriec_ora_g
+
++ 考虑到题目是 “Railfence” ，猜测可能是**栅栏密码**，于是使用**在线 [栅栏密码加密/解密【传统型】](http://www.atoolbox.net/Tool.php?Id=855)** 处理一下，然而栏数选择从 2 一直试到了 13 ，解密后的字符串已经不太变化了仍然没有得到格式正确的 flag 。
+
++ 想到不知道曾经在哪里看到过有一种**栅栏密码的变种**，于是百度一下，发现这种变种称为 **W 型栅栏密码**，而且还有 **[栅栏密码加密/解密【W型】](http://www.atoolbox.net/Tool.php?Id=777)** 的在线工具，于是直接处理一下。当栏数为 5 的时候即可得到 flag 。
+
++ flag: **cyberpeace{railfence_cipher_gogogo}**
