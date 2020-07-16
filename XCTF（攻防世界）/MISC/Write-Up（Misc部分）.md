@@ -182,33 +182,6 @@ print("")
 
 
 
-## 神奇的Modbus
-
-+ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
-
-+ 用 **wireshark** 打开，发现数据包类型很杂。由于题目是 “神奇的Modbus” ，因此特别关注 **Modbus/TCP** 包。
-
-  > + Modbus 协议是应用于电子控制器上的一种通用语言。通过此协议，控制器相互之间、控制器经由网络（例如以太网）和其它设备之间可以通信。它已经成为一通用工业标准。有了它，不同厂商生产的控制设备可以连成工业网络，进行集中监控。
-  >
-  > + 此协议定义了一个控制器能认识使用的消息结构，而不管它们是经过何种网络进行通信的。它描述了一控制器请求访问其它设备的过程，如果回应来自其它设备的请求，以及怎样侦测错误并记录。它制定了消息域格局和内容的公共格式。 
-
-+ 在过滤器中筛选出 Modbus/TCP 数据包，右键 -> **追踪流** -> **TCP流** ，发现新窗口中显示出一些奇奇怪怪的内容：
-
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E7%A5%9E%E5%A5%87%E7%9A%84Modbus/1.png?raw=true)
-
-+ 粗略查看发现一些类似 flag 形式的字段（字符之间用空格隔开了），由于混着客户端分组和服务器分组，因此在窗口的底部选择 **192.168.120.120:052 -> 192.168.130.1:62234 (34KB)** （即服务器向客户端发送的分组），查看筛选后的数据后，可以看到如下一段类似 flag 的字段：
-
-  > s.c.t.f.{.E.a.s.y._.M.d.b.u.s.}
-
-
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E7%A5%9E%E5%A5%87%E7%9A%84Modbus/2.png?raw=true)
-
-+ 去掉其中的 '.' 提交，发现不对，猜测可能出题者故意漏掉了 Modbus 中的字母 'o' ，补上提交即可通过。
-
-+ flag: **sctf{Easy_Modbus}**
-
-
-
 ## base64÷4
 
 + 下载附件压缩包并解压，发现一个后缀为 ***.txt*** 的文件。
@@ -238,6 +211,27 @@ print(flag)
 
 + 输出的内容即为 flag 。
 + flag: **flag{E33B7FD8A3B841CA9699EDDBA24B60AA}**
+
+
+
+## wireshark-1
+
++ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
++ 果断上 **wireshark** ，查看拦截到的数据包。
++ 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/1.png?raw=true)
+
++ 发现第二个 **HTML包** 的内容是一个 **php网站** 的登录操作，故右键选择 **追踪流** -> **TCP流**
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/2.png?raw=true)
+
++ 仔细查看流的内容即可发现其中隐藏着 flag ——登录的 **email** 字段值为 **flag** ，**password** 字段值即为我们要的 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/3.png?raw=true)
+
++ 也可以在弹出来的框底部的 **查找** 中直接查找字段 **flag** 。
++ flag: **flag{ffb7567a1d4f4abdffdb54e022f8facd}**
 
 
 
@@ -360,6 +354,33 @@ print(flag)
 
 
 
+## 神奇的Modbus
+
++ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
+
++ 用 **wireshark** 打开，发现数据包类型很杂。由于题目是 “神奇的Modbus” ，因此特别关注 **Modbus/TCP** 包。
+
+  > + Modbus 协议是应用于电子控制器上的一种通用语言。通过此协议，控制器相互之间、控制器经由网络（例如以太网）和其它设备之间可以通信。它已经成为一通用工业标准。有了它，不同厂商生产的控制设备可以连成工业网络，进行集中监控。
+  >
+  > + 此协议定义了一个控制器能认识使用的消息结构，而不管它们是经过何种网络进行通信的。它描述了一控制器请求访问其它设备的过程，如果回应来自其它设备的请求，以及怎样侦测错误并记录。它制定了消息域格局和内容的公共格式。 
+
++ 在过滤器中筛选出 Modbus/TCP 数据包，右键 -> **追踪流** -> **TCP流** ，发现新窗口中显示出一些奇奇怪怪的内容：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E7%A5%9E%E5%A5%87%E7%9A%84Modbus/1.png?raw=true)
+
++ 粗略查看发现一些类似 flag 形式的字段（字符之间用空格隔开了），由于混着客户端分组和服务器分组，因此在窗口的底部选择 **192.168.120.120:052 -> 192.168.130.1:62234 (34KB)** （即服务器向客户端发送的分组），查看筛选后的数据后，可以看到如下一段类似 flag 的字段：
+
+  > s.c.t.f.{.E.a.s.y._.M.d.b.u.s.}
+
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E7%A5%9E%E5%A5%87%E7%9A%84Modbus/2.png?raw=true)
+
++ 去掉其中的 '.' 提交，发现不对，猜测可能出题者故意漏掉了 Modbus 中的字母 'o' ，补上提交即可通过。
+
++ flag: **sctf{Easy_Modbus}**
+
+
+
 ## MISCall
 
 + 下载附件，发现又是一个没有后缀的文件...
@@ -434,24 +455,42 @@ with open("flag.txt", "rb") as fd:
 
 
 
-## wireshark-1
+## flag_universe
 
-+ 下载附件压缩包并解压，发现一个 ***.pcap*** 文件。
-+ 果断上 **wireshark** ，查看拦截到的数据包。
-+ 大部分是 **TCP包**，也有部分的 **HTML包** 和 **DNS包**。
++ 下载附件，解压后得到一个 ***.pcapng*** 文件。
++ 用 **Wireshark** 打开，分析其中数据包的类型，发现主要为 **TCP 包**，**FTP包**，**FTP-DATA包** 等。观察 **FTP-DATA包**，发现客户和服务器之间的数据交换包括图片文件 ***universe.png*** ，***new_universe.png*** 以及文本文件 ***flag.txt*** 文件。于是打开 **Kali Linux**  使用 `binwalk` 查看一下，发现几个 **PNG image** ：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/1.png?raw=true)
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/flag_universe/1.png?raw=true)
 
-+ 发现第二个 **HTML包** 的内容是一个 **php网站** 的登录操作，故右键选择 **追踪流** -> **TCP流**
++ 尝试使用 `foremost` 的命令提取，但不成功。于是回到 Wireshark ，观察 FTP-DATA 数据包的命令及内容。发现图片文件 ***universe.png*** 的命令是 **RETR（获取文件）**，***new_universe.png*** 的命令是 **STOR（存储文件）**，而 ***flag.txt*** 则是两种命令都有。于是首先对 **RETR /flag.txt** 进行操作 **追踪流 -> TCP流** ，在弹出的窗口中看到一串字符串，非常像 Base 64 编码后的内容：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/2.png?raw=true)
+  > ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9
 
-+ 仔细查看流的内容即可发现其中隐藏着 flag ——登录的 **email** 字段值为 **flag** ，**password** 字段值即为我们要的 flag 。
++ 于是使用 **[Base64 在线编码解码](https://base64.us/)** 网站在线解码，得到 flag 如下：
 
-![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/wireshark-1/3.png?raw=true)
+  > flag{This is fake flag hahaha}
 
-+ 也可以在弹出来的框底部的 **查找** 中直接查找字段 **flag** 。
-+ flag: **flag{ffb7567a1d4f4abdffdb54e022f8facd}**
++ 提交上去果然是假的，于是尝试对 **STOR /flag.txt** 进行操作 **追踪流 -> TCP流** ，在弹出的窗口中看到一大段字符串，也很像 Base 64 编码后的内容：
+
+  > ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9ZmxhZ3tUaGlzIGlzIGZha2UgZmxhZyBoYWhhaGF9
+
++ 于是使用 **[Base64 在线编码解码](https://base64.us/)** 网站在线解码，得到 flag 如下：
+
+  > flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}flag{This is fake flag hahaha}
+
++ 还是没得到正确的 flag 。猜测可能真正的 flag 藏在别的地方，于是考虑序号靠前的涉及图片获取和操作的数据包。通过追踪 TCP 流发现，从服务器获取图片次数很多，但上传图片（将图片存储到服务器上）的操作只有一次，猜想这次上传的图片可能有东西，于是对 **STOR /new_universe.png** 进行操作 **追踪流 -> TCP流** ，在弹出的窗口中看到该图片的整个文件数据，于是在窗口底部将 “显示和保存数据为” 的默认值 “ASCII” 改为 **“原始数据”** ：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/flag_universe/2.png?raw=true)
+
++ 然后另存为保存为 ***new_universe.png*** 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/flag_universe/new_universe.png?raw=true)
+
++ 然后首先用 **Stegsolve** 打开，遍历各个 **Plane** 检查是否有隐藏内容。没有发现任何结果，于是打开 **Kali Linux** ，使用命令 `zsteg new_universe.png` 来查看隐藏信息，成功得到 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/flag_universe/3.png?raw=true)
+
++ flag: **flag{Plate_err_klaus_Mail_Life}**
 
 
 
@@ -1132,6 +1171,47 @@ for s in string:
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%B0%8F%E5%B0%8F%E7%9A%84PDF/2.png?raw=true)
 
 + flag: **SYC{so_so_so_easy}**
+
+
+
+## Cephalopod
+
++ 下载附件，发现是一个 ***.pcap*** 文件。
+
++ 直接使用 **Wireshark** 打开，分析其中数据包的类型，发现主要为 **TCP 包**和一种和奇怪的 **Ceph包**。
+
+  > + Ceph 是一种为优秀的性能、可靠性和可扩展性而设计的统一的、分布式文件系统。
+  > + Ceph 是一种软件定义存储，可以运行在几乎所有主流的 Linux 发行版（比如 CentOS 和 Ubuntu）和其它类UNIX操作系统（典型如 FreeBSD）。
+  > + Ceph 的分布式基因使其可以轻易管理成百上千个节点、PB 级及以上存储容量的大规模集群，同时基于计算的扁平寻址设计使得Ceph客户端可以直接和服务端的任意节点通信，从而避免因为存在访问热点而导致性能瓶颈。
+  > + Ceph 独一无二地用统一的系统提供了对象、块、和文件存储功能，它可靠性高、管理简便、并且是自由软件。 Ceph 的强大足以改变贵公司的 IT 基础架构、和管理海量数据的能力。Ceph 可提供极大的伸缩性——供成千用户访问 PB 乃至 EB 级的数据。 Ceph 节点以普通硬件和智能守护进程作为支撑点， Ceph 存储集群组织起了大量节点，它们之间靠相互通讯来复制数据、并动态地重分布数据。
+
++ 好吧又是文件系统。这次学乖了，上来不直接 `binwalk` 了，而是直接在 Wireshark 中进行分析。对第一个 Ceph 包进行操作 **追踪流 -> TCP流** ，此时过滤器中显示 `tcp.stream eq 0` ，弹出的窗口内容如下，像是进行文件传输之前的准备工作，类似TCP的握手或者登录文件系统时的各种身份验证工作。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Cephalopod/1.png?raw=true)
+
++ 继续追踪其它的 TCP 流，把过滤器中的内容修改为 `tcp.stream eq 1` ，查看弹出窗口中的数据内容。这次有了重要发现——服务端发送给客户端或者客户端发送给服务端的数据中都出现了 **“flag.png”** 字段：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Cephalopod/2.png?raw=true)
+
++ 根据题目提示，flag 很有可能就在这张图片里面。下面的问题就在于如何把图片给分离出来。`binwalk` 后使用 `foremost` 并不能成功得到这张图片，于是直接在数据包中寻找这张图片的数据信息。预先知道 PNG 文件的文件结构信息如下：
+
+  > + PNG 文件的文件头标识为：89 50 4e 47 0d 0a 1a 0a ，对应 ASCII 码为：.PNG....
+  > + 然后是IHDR数据块信息：00 00 00 0d 49 48 44 52 ，对应 ASCII 码为：....IHDR
+  >   + `0000 000d` 说明 IHDR 头块长为 13 ，
+  >   + `4948 4452` 为 IHDR 字段标识。
+  > + PNG 文件的文件结尾为：00 00 00 00 49 45 4E 44 AE 42 60 82 ，对应 ASCII 码为：....IEND.B`.
+
++ 该 TCP 流中没有发现传输 *flag.png* 文件的内容，于是修改过滤器内容继续追踪别的 TCP 流。发现一共就 3 条 TCP 流，修改为 `tcp.stream eq 2` 时，窗口中显示的数据就包含了 *flag.png* 文件传输的数据内容。在窗口底部将 “显示和保存数据为” 的默认值 “ASCII” 改为 **“原始数据”** 后搜索 `89504e470d0a1a0a` 字段和 `0000000049454E44AE426082` 都能搜索到：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Cephalopod/3.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Cephalopod/4.png?raw=true)
+
++ 将该窗口中的数据保存为 ***flag.png*** ，在 **WinHex** 中打开，去掉文件中 `89504e470d0a1a0a` 前的数据和 `0000000049454E44AE426082` 后的数据后保存，即可在图片中看到 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Cephalopod/flag.png?raw=true)
+
++ flag: **HITB{95700d8aefdc1648b90a92f3a8460a2c}**
 
 
 
