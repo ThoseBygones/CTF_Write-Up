@@ -1144,6 +1144,36 @@ for s in string:
 
 
 
+## Get-the-key.txt
+
++ 下载附件，发现是一个无后缀的文件。
++ 用 **WinHex** 打开，扫了一下没看到什么有用的内容，直接搜索 “flag” 字符串也没有结果。于是打开 **Kali Linux** ，`binwalk` 一下：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Get-the-key.txt/1.png?raw=true)
+
++ `binwalk` 没有发现什么隐藏的文件，但是却看出这个文件是 **Linux EXT filesystem** 。于是新建一个文件夹 `/xctf` ，然后使用 Linux 的挂载命令 `mount forensic100 xctf/` 来查看。挂载后得到一堆压缩包：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Get-the-key.txt/2.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Get-the-key.txt/3.png?raw=true)
+
++ 题目提示 “get-the-key.txt” ，猜测要找 ***key.txt*** 。于是进入挂载点所在的文件夹 `/xctf` 使用 `grep -r key.txt` 命令递归查找文件 *key.txt* 文件，发现在压缩包 ***1*** 中存在 *key.txt* 文件：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Get-the-key.txt/4.png?raw=true)
+
++ 查看压缩包类型，发现压缩包是 **Gzip archive (application/gzip)** 类型，于是使用解压 *.gz* 文件的命令 `gunzip 1` ，但是得到 “后缀未知” 的解压失败提示。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Get-the-key.txt/5.png?raw=true)
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Get-the-key.txt/6.png?raw=true)
+
++ 无奈之下只能修改文件后缀，使用命令 `mv 1 1.gz` 修改压缩包为 ***1.gz*** 后再使用命令 `gunzip 1.gz` 解压。解压后使用 `chmod +x 1` 修改对该文件的访问模式，然后再使用命令 `cat 1` 打开文件即可得到 flag 字符串。
+
++ **（注：别的压缩包中也有 *.txt* 文件，但都是 *key2.txt* ，*key3.txt* 等等，而且里面都有一个类似 flag 的字符串，但是根据题目提示在加上运气，直接在压缩包 *1* 中找到了正确的 flag 。** 
++ flag: **SECCON{@]NL7n+-s75FrET]vU=7Z}**
+
+
+
 ## 肥宅快乐题
 
 + 下载附件，发现是一个 ***.swf*** 文件。
@@ -1248,3 +1278,47 @@ for s in string:
 
 + flag: **ssctf{ssCtf_seC10ver#@rabit}**
 
+
+
+## Avatar
+
++ 下载附件，发现是一张 ***.jpg*** 文件。
++ 首先使用 **Stegsolve** 查看各个 Plane 是否有隐藏的信息，并没有发现。
++ 于是打开 **Kali Linux** 系统，使用 `zsteg` 命令查看，但是得到提示 `zsteg` 并不能对 *.jpg* 格式的文件进行操作：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Avatar/1.png?raw=true)
+
++ 于是使用 `binwalk` 命令查看一下，但也没有发现隐藏的文件。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Avatar/2.png?raw=true)
+
++ 于是百度，了解到 **JPG** 格式图片的隐写套路：
+
+  > - 在图片右击查看属性，在详细信息中隐藏数据。
+  > - 将数据类型进行改写（rar或者zip数据改为jpg等格式）。
+  > - 根据各种类型图像的固定格式，隐藏数据。
+  > - 在编译器中修改图像开始的标志，改变其原来图像格式。
+  > - 在图像结束标志后加入数据。
+  > - 在图像数据中加入数据，不影响视觉效果情况下修改像素数据，加入信息。
+  > - 利用隐写算法将数据隐写到图片中而不影响图像（仅限于jpg图像） 隐写常用的算法有F5，guess jsteg jphide。
+
++ 解决方法有：
+
+  > - 查看图像属性详细信息是否有隐藏内容。
+  > - 利用 Winhex 或 Nodepad++ 打开搜索 ctf, CTF, flag, key 等关键字是否存在相关信息。
+  > - 检查图像的开头标志和结束标志是否正确，若不正确修改图像标志恢复图像，打开查看是否有 flag 或 ctf 信息（gif 格式图片需要分帧查看各帧图像组合所得数据。若不是直接的 ctf 或 flag 信息，需要考虑将其解码）。
+  > - 在 Kali Linux 系统中执行 `binwalk` 查看图片中是否是多个图像组合或者包含其他文件（若存在多幅图像组合，再执行 `foremost` 分离内容；若检测出其他文件修改其后缀名即可，如改为 *.zip* ）。
+  > - 使用 StegSolve 对图像进行分通道扫描（是否为LSB隐写等）。
+  > - 在 Kail Linux 系统中进入目录 `/F5-steganography` ，执行 `java Extract` 命令（需要先从 Github 上使用 `git clone https://github.com/matthewgao/F5-steganography ` 命令获取该工具），检测是否是 steganography 算法隐写。
+  > - 在 Kail Linux 系统中使用 outguess 工具（需要预先从 Github 上使用 `git clone https://github.com/crorvick/outguess` 命令获取该工具，然后进入 `/outguess` 目录下使用 `./configure && make && make install` 安装），检测是否为 guess 算法隐写。
+
++ 查看图像属性详细信息后并未发现有隐藏内容。同时使用 F5-steganography 工具解析失败：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Avatar/3.png?raw=true)
+
++ 最后输入命令 `outguess -r /root/035bfaa85410429495786d8ea6ecd296.jpg -t /root/output.txt` 使用 outguess 工具检测：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Avatar/4.png?raw=true)
+
++ 得到输出的 ***output.txt*** 后，使用命令 `chmod +x output.txt` ，再使用命令 `cat output.txt` 即可得到 flag 。
++ flag: **We should blow up the bridge at midnight**
