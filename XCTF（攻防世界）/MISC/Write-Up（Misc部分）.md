@@ -707,6 +707,30 @@ print(flag)
 
 
 
+## 快乐游戏题
+
++ 下载附件压缩包，解压以后得到一个 ***.exe*** 文件。
++ 打开以后发现是一个 “貌似很简单” 的小游戏——界面上有很多的浅色的圆点和少量深色的圆点（表示障碍物），有一个圆点上有一只猫。玩家只需要用鼠标点击浅色的圆点即可使其变成深色的（障碍物），深色的圆点猫是不过移动上去的。玩家需要用深色圆点把猫完全围住才能得到 flag ，若将猫围住之前猫就已经移动到了游戏界面的边界，则猫成功逃脱，玩家无法得到 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%BF%AB%E4%B9%90%E6%B8%B8%E6%88%8F%E9%A2%98/1.png?raw=true)
+
++ 尝试几次以后发现一些特点：
+  + 猫有时候会有些神操作，尤其是新增的障碍物离猫不近时，算法会使猫优先向左上角移动（即使可能移动的方向正好是玩家大量布置障碍物的方向）。
+  + 初始界面每次都不同，初始障碍物和猫的分布都是随机的，因此可以不断刷新得到更适合围猫的初始状态。
+  + 当障碍物距离猫很近的时候，猫会 “慌” ，但并不是慌不择路——障碍物越近猫越懂得找缝隙或者最佳的逃避方案，此时很难被成功围住。
++ 最佳的初始状态就是尽量刷出初始障碍物数量较多，且分布大致能够成一个不太小但也不太大的圈（初具圈的雏形）。猫的初始位置尽量靠近界面中央且距离这些障碍物不是太近。
++ 通关技巧则是需要估计最好要围猫的圈大致的大小（太大太小都不合适），然后尽量提前合围（需要有远见），尽量在猫离障碍物较远的时候布好局，让猫靠近了发现被阻挡了才转向这样是最佳的（使猫浪费了及时逃离的步数），为我们的布阵提供时间。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%BF%AB%E4%B9%90%E6%B8%B8%E6%88%8F%E9%A2%98/2.png?raw=true)
+
++ 通关以后成功得到 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%BF%AB%E4%B9%90%E6%B8%B8%E6%88%8F%E9%A2%98/3.png?raw=true)
+
++ flag: **UNCTF{c783910550de39816d1de0f103b0ae32}**
+
+
+
 ## glance-50
 
 + 下载附件发现是一个 ***.gif*** 图片文件。
@@ -1255,6 +1279,56 @@ for s in string:
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Excaliflag/1.png?raw=true)
 
 + flag: **3DS{Gr4b_Only_th1s_B1ts}**
+
+
+
+## 4-2
+
++ 下载附件，发现是一个 ***.txt*** 文件。
+
++ 打开文件，发现如下内容：
+
+  > Eg qnlyjtcnzydl z umaujejmjetg qeydsn eu z bsjdtx tw sgqtxegc al kdeqd mgeju tw yrzegjsoj zns nsyrzqsx kejd qeydsnjsoj
+  > Ew ltm fgtk jds kzl tw sgqtxegc m kerr csj jds wrzc kdeqd eu qrzuueqzr-qeydsn_eu_gtj_usqmnejl_du
+
++ 看起来很像是**古典密码**的形式，虽然没一个单词看得懂，但是每个单词间的空格都给出了，而且有一些常见的模式，比如密文中 'e' 字母多次作为一个 “单词” 的首字母出现（可能对应明文中的字母 'i'），'z' 字母多次单独出现（可能对应明文中的字母 'a'）等等。为了图方便，直接丢到 **[quipqiup古典密码（替换密码）自动爆破（词频分析）](https://quipqiup.com/) 网站**处理，第 0 条结果（网站给出的最佳匹配结果）即为明文：
+
+  > In cryptography a substitution cipher is a method of encoding by which units of plaintext are replaced with ciphertext If you know the way of encoding u will get the flag which is classical-cipher_is_not_security_hs
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/4-2/1.png?raw=true)
+
++ 从中即可得到 flag 。
++ flag: **flag{classical-cipher_is_not_security_hs}**
+
+
+
+## misc1
+
++ 题目描述直接给出了一串字符串：
+
+  > d4e8e1f4a0f7e1f3a0e6e1f3f4a1a0d4e8e5a0e6ece1e7a0e9f3baa0c4c4c3d4c6fbb9e1e6b3e3b9e4b3b7b7e2b6b1e4b2b6b9e2b1b1b3b3b7e6b3b3b0e3b9b3b5e6fd
+
++ 仔细观察发现，这个字符串看起来很像是十六进制数的形式，于是猜想可能每两个十六进制字符可以表示一个 ASCII 码，于是写个脚本处理一下。但是输出结果全是乱七八糟的字符，于是输出每两个十六进制字符组成的 ASCII 码值，发现值全部都大于 128 。于是减去 128 后再转换为字符输出，即可得到 flag 。
+
++ Python 脚本如下（***solve.py***）：
+
+```python
+msg = "d4e8e1f4a0f7e1f3a0e6e1f3f4a1a0d4e8e5a0e6ece1e7a0e9f3baa0c4c4c3d4c6fbb9e1e6b3e3b9e4b3b7b7e2b6b1e4b2b6b9e2b1b1b3b3b7e6b3b3b0e3b9b3b5e6fd"
+
+flag = ""
+
+for i in range(0, len(msg)):
+    if i % 2 == 0:
+        tmpstr = msg[i]
+    else:
+        tmpstr += msg[i]
+        #print(int(tmpstr, 16))
+        flag += chr(int(tmpstr, 16) - 128)
+        
+print(flag)
+```
+
++ flag: **DDCTF{9af3c9d377b61d269b11337f330c935f}**
 
 
 
