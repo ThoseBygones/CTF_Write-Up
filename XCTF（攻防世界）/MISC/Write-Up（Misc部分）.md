@@ -1198,6 +1198,58 @@ for s in string:
 
 
 
+## 2-1
+
++ 下载附件，发现是一个 ***.png*** 文件。
+
++ 但是图片文件打不开，用 **WinHex** 打开发现这个 PNG 文件的文件头不对：
+
+  > 80 59 4E 47 0D 0A 1A 0A
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/2-1/1.png?raw=true)
+
++ 正确的 PNG 文件文件头应该为：
+
+  > 89 50 4E 47 0D 0A 1A 0A
+
++ 修改过后图片文件依然打不开。用 Kali Linux 打开，使用 `binwalk` 命令也没有找到什么东西。于是在 Linux 系统下打开图片，发现提示 “无法载入图像” ，“IHDR CRC error” 。原来是 **IHDR 数据块的 CRC 校验码出错**：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/2-1/2.png?raw=true)
+
++ 在 WinHex 中仔细分析文件内容以后发现， IHDR 数据块中图片的宽度竟然为 0 ：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/2-1/3.png?raw=true)
+
++ 猜想可能被人为修改了，于是考虑利用 IHDR 数据块的 CRC 校验码对图片的宽度进行爆破，写一个 python 脚本（***brute_force.py***）：
+
+```python
+import binascii
+import struct
+
+crc_val = 0x932F8A6B
+
+with open("error_pic.png", "rb") as file:
+    data = file.read()
+
+for width in range(0, 65535):
+    tmp = data[12:16] + struct.pack('>i', width) + data[20:29]
+    if (binascii.crc32(tmp) & 0xFFFFFFFF) == crc_val:
+        print(hex(width))
+        break
+```
+
++ 爆破得到的图片宽度值应该为 **0x2c5** ，于是在 WinHex 中修改图片宽度值为：
+
+  > 00 00 02 C5
+
++ 得到能够正常打开的图片，图片中的字符串即为 flag 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/2-1/flag.png?raw=true)
+
++ flag: **wdflag{Png_C2c_u_kn0W}**
+
+
+
 ## 肥宅快乐题
 
 + 下载附件，发现是一个 ***.swf*** 文件。
