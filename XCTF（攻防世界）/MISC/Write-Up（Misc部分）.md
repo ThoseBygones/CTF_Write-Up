@@ -678,6 +678,30 @@ with open("reversed.jpg", "wb") as outfile:
 
 
 
+## Erik-Baleog-and-Olaf
+
++ 下载附件，解压缩后得到一个无后缀文件。
++ 丢进 **WinHex** 里查看，发现文件头和文件尾都符合 PNG 文件的文件头和文件尾，于是直接把文件改成 ***.png*** 文件然后即可正常打开：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Erik-Baleog-and-Olaf/1.png?raw=true)
+
++ 图片没什么特别的，于是先用 **Stegsolve** 打开查看有没有隐藏什么，果然在很多 Plane 中都能看到图片中央隐藏着一个二维码，但是不同的 Plane 中二维码要么不清楚（甚至不完整），要么隐隐约约的看不清楚：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Erik-Baleog-and-Olaf/2.png?raw=true)
+
++ 于是在 **Random colour map 1 ~ 3** 中不断切换，找到一张随机着色时二维码部分相对清楚的图片截图下来（此处省略十几次的尝试QAQ）：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Erik-Baleog-and-Olaf/3.png?raw=true)
+
++ 把截下来的图片再次用 **Stegsolve** 打开，不断切换 Plane 直到找到二维码相对完整且未被多余或无用的像素点干扰的白底黑像素点二维码图片，保存即可：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/Erik-Baleog-and-Olaf/solved.png?raw=true)
+
++ 用 [**在线二维码解码器 | 二维码解码 | 二维码安全检测工具**](https://www.sojson.com/qr/deqr.html) 识别一下，即可得到 flag （很多别的在线二维码解码网站都识别不出来...）。
++ flag: **flag{#justdiffit}**
+
+
+
 ## hit-the-core
 
 + 下载附件，发现一个文件后缀为 ***.core*** 的文件。
