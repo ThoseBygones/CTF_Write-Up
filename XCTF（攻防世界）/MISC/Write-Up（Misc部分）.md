@@ -640,6 +640,21 @@ with open("reversed.jpg", "wb") as outfile:
 
 
 
+## 倒立屋
+
++ 下载附件，解压缩以后发现一个 ***.png*** 文件。
++ 打开图片，发现是一张倒立过来的房屋，没有什么特别的。
++ 用 **Stegsolve** 打开，切换不同的 Plane 查看，没发现有什么隐藏的信息。
++ 用 **Kali Linux** 打开，用 `zsteg` 命令查看一下隐写内容，发现是 lsb 隐写，字符串为 **IsCc_2019** 。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/%E5%80%92%E7%AB%8B%E5%B1%8B/1.png?raw=true)
+
++ 由于题目来源就是 ISCC-2019，猜想这不太可能是 flag ，也许是个什么压缩文件的密码，于是用 **WinHex** 打开这个图片，查看是否有隐藏别的文件，没有什么发现。在 Linux 下使用 `binwalk` 也没有什么发现。
++ 一时没有想法，想到题目是 “倒立屋” ，猜想也许把字符串倒过来就是 flag 。但是直接提交并不能对，需要加上 flag{xxx...xxx} 的马甲才行...
++ flag: **flag{9102_cCsI}**
+
+
+
 ## 2017_Dating_in_Singapore
 
 + 下载附件，发现一个 ***.pdf*** 文件，文件内容是张 2017 年的新加坡日历（？？？）
@@ -1150,6 +1165,50 @@ flag()
 ![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/easycap/1.png?raw=true)
 
 + flag: **FLAG:385b87afc8671dee07550290d16a8071**
+
+
+
+## stage1
+
++ 下载文件，解压缩得到一个 ***.png*** 文件。
++ 打开图片发现怎么这么眼熟，好像在哪见过：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/stage1/3600c13125fe4443aeef3c55b9c1357b.png?raw=true)
+
++ 于是按照套路来，首先用 **Stegsolve** 打开，很快在 **Blue Plane** 下看到图片左上角有一张二维码，然后截图下来保存。
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/stage1/1.png?raw=true)
+
++ 如果直接把这张二维码拿去在线二维码识别工具识别并不能得到任何东西（大概是因为这个二维码是黑底白像素点吧），于是再次用 Stegsolve 打开，在 **Colour Inversion (Xor)** 这个 Plane 把图片保存下来：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/stage1/solved.png?raw=true)
+
++ 将二维码丢到 **[草料二维码解码器](https://cli.im/deqr/)** 在线解码，得到一大串十六进制数字：
+
+  > 03F30D0AB6266A576300000000000000000100000040000000730D0000006400008400005A00006401005328020000006300000000030000000800000043000000734E0000006401006402006403006404006405006406006405006407006708007D00006408007D0100781E007C0000445D16007D02007C01007400007C0200830100377D0100712B00577C010047486400005328090000004E6941000000696C000000697000000069680000006961000000694C0000006962000000740000000028010000007403000000636872280300000074030000007374727404000000666C6167740100000069280000000028000000007307000000746573742E7079520300000001000000730A00000000011E0106010D0114014E280100000052030000002800000000280000000028000000007307000000746573742E707974080000003C6D6F64756C653E010000007300000000
+
++ 打开 **WinHex** ，把剪贴板数据粘贴到新文件，看到文件头信息与 ***.pyc*** 文件一致（且文件末尾的数据也证实了这个判断）：
+
+![](https://github.com/ThoseBygones/CTF_Write-Up/blob/master/XCTF%EF%BC%88%E6%94%BB%E9%98%B2%E4%B8%96%E7%95%8C%EF%BC%89/MISC/stage1/2.png?raw=true)
+
++ 于是保存成 *test.pyc* 文件，然后在打开 **Anaconda Prompt** ，在该文件所在目录下使用命令 `uncompyle6 test.pyc > test.py` ，即可得到反编译后的 **test.py** 文件。打开改文件，稍微修改一下代码运行即可得到 flag ：
+
+```python
+def flag():
+    str = [
+     65, 108, 112, 104, 97, 76, 97, 98]
+    flag = ''
+    for i in str:
+        flag += chr(i)
+
+    print(flag)
+# okay decompiling test.pyc
+
+flag()
+```
+
++ **注：本题跟 [适合作为桌面](#适合作为桌面) 这道题一个解法...**
++ flag: **AlphaLab**
 
 
 
